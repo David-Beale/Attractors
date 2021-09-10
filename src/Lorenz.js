@@ -47,6 +47,7 @@ export default function Lorenz() {
         newItem.y = y + dy;
         newItem.z = z + dz;
         scratchObject3D.position.set(newItem.x, newItem.y, newItem.z);
+        scratchObject3D.rotation.set(0, 0, 0);
         scratchObject3D.updateMatrix();
       } else {
         scratchObject3D.position.set(item.x, item.y, item.z);
@@ -67,7 +68,7 @@ export default function Lorenz() {
       args={[null, null, length]}
       frustumCulled={false}
     >
-      <coneBufferGeometry args={[0.01, 0.01, 3]} />
+      <dodecahedronBufferGeometry args={[0.01, 0]} />
 
       <meshStandardMaterial attach="material" color="white" />
     </instancedMesh>

@@ -17,17 +17,13 @@ export default function App() {
         <Stats className="stats" />
         <directionalLight
           intensity={5}
-          position={[-1000, 1000, -1000]}
+          position={[-1000, 0, 0]}
           color="hotpink"
         />
+        <directionalLight intensity={5} position={[1000, 0, 0]} color="teal" />
         <directionalLight
           intensity={5}
-          position={[1000, 1000, 1000]}
-          color="blue"
-        />
-        <directionalLight
-          intensity={5}
-          position={[1000, -1000, 0]}
+          position={[0, -1000, 0]}
           color="green"
         />
         {/* <directionalLight
