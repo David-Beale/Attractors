@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Stats } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import Lorenz from "./Lorenz";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Canvas
+        camera={{
+          position: [0, 0, 500],
+          fov: 40,
+          far: 1000,
+        }}
+      >
+        <Lorenz />
+        <Stats className="stats" />
+        <ambientLight intensity={0.5} />
+      </Canvas>
     </div>
   );
 }
-
-export default App;
