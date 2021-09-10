@@ -1,7 +1,7 @@
 import { useRef } from "react";
 
 import { useFrame } from "@react-three/fiber";
-import { Object3D } from "three";
+import { AdditiveBlending, Object3D } from "three";
 
 const length = 100000;
 const scratchObject3D = new Object3D();
@@ -21,7 +21,7 @@ export default function Lorenz() {
   const meshRef = useRef();
   const index = useRef(1);
   // const array = useRef([{ x: 0.0321, y: 0.3106, z: 0.2189 }]);
-  const array = useRef([{ x: 0.1, y: 1.0, z: 0.01 }]);
+  const array = useRef([{ x: 0.5, y: 1.0, z: 0.01 }]);
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -68,9 +68,13 @@ export default function Lorenz() {
       args={[null, null, length]}
       frustumCulled={false}
     >
-      <dodecahedronBufferGeometry args={[0.01, 0]} />
+      <dodecahedronBufferGeometry args={[0.003, 0]} />
 
-      <meshStandardMaterial attach="material" color="white" />
+      <meshStandardMaterial
+        attach="material"
+        color="white"
+        blending={AdditiveBlending}
+      />
     </instancedMesh>
   );
 }
