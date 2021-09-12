@@ -9,7 +9,7 @@ export default function App() {
     <div className="container">
       <Canvas
         camera={{
-          position: [0, 0, 10],
+          position: [0, 0, 3],
           fov: 40,
           far: 1000,
         }}
