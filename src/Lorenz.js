@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useRef } from "react";
 
 import { useFrame } from "@react-three/fiber";
-import { AdditiveBlending, Object3D, Quaternion, Vector3 } from "three";
+import { AdditiveBlending, Object3D, Vector3 } from "three";
 
 const length = 10000;
 const scratchObject3D = new Object3D();
 const currentVector = new Vector3();
-const targetVector = new Vector3();
-const axis = new Vector3(1, 0, 0);
 
 // const a = 10;
 // const b = 28;
@@ -22,17 +20,16 @@ const f = 0.1;
 
 export default function Lorenz() {
   const meshRef = useRef();
-  const index = useRef(0);
-  // const array = useRef([{ x: 0.0321, y: 0.3106, z: 0.2189 }]);
-  const array = useRef([{ x: 0.5, y: 1.0, z: 0.01 }]);
+  const index = useRef(length);
   const start = useRef(new Vector3(0.5, 1.0, 0.01));
 
-  const akaiwa = useMemo(() => {
-    const newArray = [];
+  const [positions, rotations] = useMemo(() => {
+    const positions = [];
     let vec = start.current;
+
     for (let i = 0; i < length; i++) {
       const { x, y, z } = vec;
-      newArray.push(vec.clone());
+      positions.push(vec.clone());
       vec.x += ((z - b) * x - d * y) * 0.01;
       vec.y += (d * x + (z - b) * y) * 0.01;
       vec.z +=
@@ -42,13 +39,27 @@ export default function Lorenz() {
           ((x * x + y * y) * 1 + e * z) +
           f * z * (x * x * x)) *
         0.01;
-      // vec.x = i / 10;
-      // vec.y = 0;
-      // vec.z = 0;
-      // newArray.push(vec.clone());
     }
-    return newArray;
+
+    const rotations = [];
+    const axis = new Vector3(1, 0, 0);
+    for (let i = 0; i < length - 1; i++) {
+      const currentVector = positions[i];
+      const nextVector = positions[i + 1];
+
+      scratchObject3D.position.set(
+        currentVector.x,
+        currentVector.y,
+        currentVector.z
+      );
+      scratchObject3D.lookAt(nextVector);
+      scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
+      rotations.push(scratchObject3D.rotation.toArray());
+    }
+    rotations.push(scratchObject3D.rotation.toArray());
+    return [positions, rotations];
   }, []);
+
   const offsets = useMemo(() => {
     const newArray = [];
     for (let i = 0; i < length; i++) {
@@ -62,60 +73,59 @@ export default function Lorenz() {
     }
     return newArray;
   }, []);
+  // useEffect(() => {
+  //   if (!meshRef.current) return;
+  //   for (let i = 0; i < length; i++) {
+  //     const offset = offsets[i];
+  //     const ind1 = i % length;
+  //     const vec1 = positions[ind1];
+  //     currentVector.addVectors(vec1, offset);
 
-  useEffect(() => {
-    if (!meshRef.current) return;
-    const currentVector = new Vector3();
-    const targetVector = new Vector3();
-    const axis = new Vector3(1, 0, 0);
-    for (let i = 0; i < length; i++) {
-      const offset = offsets[i];
-      const ind1 = i % length;
-      const vec1 = akaiwa[ind1];
-      currentVector.addVectors(vec1, offset);
+  //     scratchObject3D.position.set(
+  //       currentVector.x,
+  //       currentVector.y,
+  //       currentVector.z
+  //     );
 
-      const ind2 = (i + 1) % length;
-      const vec2 = akaiwa[ind2];
-      targetVector.addVectors(vec2, offset);
+  //     scratchObject3D.rotation.set(
+  //       rotations[i][0],
+  //       rotations[i][1],
+  //       rotations[i][2]
+  //     );
 
-      scratchObject3D.position.set(
-        currentVector.x,
-        currentVector.y,
-        currentVector.z
-      );
-      scratchObject3D.lookAt(targetVector);
-      scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
-      scratchObject3D.updateMatrix();
+  //     scratchObject3D.updateMatrix();
 
-      meshRef.current.setMatrixAt(i, scratchObject3D.matrix);
-    }
-    meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [akaiwa, offsets]);
+  //     meshRef.current.setMatrixAt(i, scratchObject3D.matrix);
+  //   }
+  //   meshRef.current.instanceMatrix.needsUpdate = true;
+  // }, [positions, offsets, rotations]);
 
   useFrame(() => {
     if (!meshRef.current) return;
 
     for (let i = 0; i < length; i++) {
-      const offset = offsets[i];
       const ind1 = (i + index.current) % length;
-      const vec1 = akaiwa[ind1];
+      const offset = offsets[ind1];
+      const vec1 = positions[i];
       currentVector.addVectors(vec1, offset);
-
-      const ind2 = (i + index.current + 1) % length;
-      const vec2 = akaiwa[ind2];
-      targetVector.addVectors(vec2, offset);
 
       scratchObject3D.position.set(
         currentVector.x,
         currentVector.y,
         currentVector.z
       );
-      scratchObject3D.lookAt(targetVector);
-      scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
+
+      scratchObject3D.rotation.set(
+        rotations[i][0],
+        rotations[i][1],
+        rotations[i][2]
+      );
+
       scratchObject3D.updateMatrix();
       meshRef.current.setMatrixAt(i, scratchObject3D.matrix);
     }
-    index.current++;
+    index.current--;
+    if (index.current === 0) index.current = length;
     meshRef.current.instanceMatrix.needsUpdate = true;
   });
 
