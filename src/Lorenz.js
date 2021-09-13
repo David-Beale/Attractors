@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef } from "react";
 
 import { useFrame } from "@react-three/fiber";
 import { AdditiveBlending, Object3D, Vector3 } from "three";
+import { useBufferAnimation } from "./useBufferAnimation";
 
-const length = 10000;
+const length = 1000;
 const scratchObject3D = new Object3D();
 const currentVector = new Vector3();
 
@@ -53,10 +54,10 @@ export default function Lorenz() {
         currentVector.z
       );
       scratchObject3D.lookAt(nextVector);
-      scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
-      rotations.push(scratchObject3D.rotation.toArray());
+      // scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
+      rotations.push(scratchObject3D.rotation.clone());
     }
-    rotations.push(scratchObject3D.rotation.toArray());
+    rotations.push(scratchObject3D.rotation.clone());
     return [positions, rotations];
   }, []);
 
@@ -64,21 +65,30 @@ export default function Lorenz() {
     const newArray = [];
     for (let i = 0; i < length; i++) {
       newArray.push(
-        new Vector3(
-          (0.5 - Math.random()) * 0.015,
-          (0.5 - Math.random()) * 0.015,
-          (0.5 - Math.random()) * 0.015
-        )
+        (0.5 - Math.random()) * 0.015,
+        (0.5 - Math.random()) * 0.015,
+        (0.5 - Math.random()) * 0.015
       );
     }
     return newArray;
   }, []);
-  // useEffect(() => {
+
+  const [geo, mat] = useBufferAnimation({ positions, rotations, offsets });
+
+  useFrame(() => {
+    if (!meshRef.current) return;
+    const uniforms = meshRef.current.material.uniforms;
+    uniforms.index.value--;
+    if (uniforms.index.value === 0) uniforms.index.value = length;
+  });
+
+  // useFrame(() => {
   //   if (!meshRef.current) return;
+
   //   for (let i = 0; i < length; i++) {
-  //     const offset = offsets[i];
-  //     const ind1 = i % length;
-  //     const vec1 = positions[ind1];
+  //     const ind1 = (i + index.current) % length;
+  //     const offset = offsets[ind1];
+  //     const vec1 = positions[i];
   //     currentVector.addVectors(vec1, offset);
 
   //     scratchObject3D.position.set(
@@ -94,58 +104,40 @@ export default function Lorenz() {
   //     );
 
   //     scratchObject3D.updateMatrix();
-
   //     meshRef.current.setMatrixAt(i, scratchObject3D.matrix);
   //   }
+  //   index.current--;
+  //   if (index.current === 0) index.current = length;
   //   meshRef.current.instanceMatrix.needsUpdate = true;
-  // }, [positions, offsets, rotations]);
-
-  useFrame(() => {
-    if (!meshRef.current) return;
-
-    for (let i = 0; i < length; i++) {
-      const ind1 = (i + index.current) % length;
-      const offset = offsets[ind1];
-      const vec1 = positions[i];
-      currentVector.addVectors(vec1, offset);
-
-      scratchObject3D.position.set(
-        currentVector.x,
-        currentVector.y,
-        currentVector.z
-      );
-
-      scratchObject3D.rotation.set(
-        rotations[i][0],
-        rotations[i][1],
-        rotations[i][2]
-      );
-
-      scratchObject3D.updateMatrix();
-      meshRef.current.setMatrixAt(i, scratchObject3D.matrix);
-    }
-    index.current--;
-    if (index.current === 0) index.current = length;
-    meshRef.current.instanceMatrix.needsUpdate = true;
-  });
+  // });
 
   return (
-    <instancedMesh
-      ref={meshRef}
-      args={[null, null, length]}
-      frustumCulled={false}
-    >
-      {/* <dodecahedronBufferGeometry args={[0.003, 0]} /> */}
-      <coneBufferGeometry
-        args={[0.003, 0.01, 3]}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
+    // <instancedMesh
+    //   ref={meshRef}
+    //   args={[null, null, length]}
+    //   frustumCulled={false}
+    // >
+    //   {/* <dodecahedronBufferGeometry args={[0.003, 0]} /> */}
+    //   <coneBufferGeometry
+    //     args={[0.003, 0.01, 3]}
+    //     rotation={[Math.PI / 2, 0, 0]}
+    //   />
 
-      <meshStandardMaterial
-        attach="material"
-        color="white"
-        blending={AdditiveBlending}
-      />
-    </instancedMesh>
+    //   <meshStandardMaterial
+    //     attach="material"
+    //     color="white"
+    //     blending={AdditiveBlending}
+    //   />
+    // </instancedMesh>
+    <>
+      {mat && (
+        <mesh
+          frustumCulled={false}
+          ref={meshRef}
+          material={mat}
+          geometry={geo}
+        />
+      )}
+    </>
   );
 }

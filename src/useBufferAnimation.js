@@ -3,106 +3,89 @@ import { useMemo, useRef } from "react";
 
 import {
   InstancedPrefabBufferGeometry,
+  ShaderChunk,
   StandardAnimationMaterial,
 } from "three-bas";
+import { Quaternion } from "three";
 
-const data = {
-  length: 1,
-};
-export const useBufferAnimation = ({ CONFIG }) => {
+export const useBufferAnimation = ({ positions, rotations, offsets }) => {
   const geometryRef = useRef(null);
   const materialRef = useRef(null);
 
   return useMemo(() => {
-    const length = data.length;
+    const length = positions.length;
 
-    const prefab = new THREE.ConeBufferGeometry(1, 1, 3);
+    const prefab = new THREE.ConeBufferGeometry(0.003, 0.01, 3);
     const geometry = new InstancedPrefabBufferGeometry(prefab, length);
 
-    const startTimeBuffer = geometry.createAttribute("startTime", 1);
-
-    const tmpa = [];
-
+    const positionBuffer = geometry.createAttribute("pos", 3);
+    const rotationBuffer = geometry.createAttribute("rot", 3);
+    const referenceBuffer = geometry.createAttribute("ref", 1);
+    console.log(rotations);
     //loop through all new points
+    const qua = new Quaternion();
     for (let i = 0; i < length; i++) {
-      //delay
-      tmpa[0] = (CONFIG.totalDelay / length) * i;
-      geometry.setPrefabData(startTimeBuffer, i, tmpa);
+      geometry.setPrefabData(positionBuffer, i, positions[i].toArray());
+      geometry.setPrefabData(rotationBuffer, i, rotations[i].toArray());
+
+      geometry.setPrefabData(referenceBuffer, i, [i]);
     }
 
     const uniforms = {
-      time: { value: 0 },
-      duration: { value: CONFIG.duration },
-      spiralAngle: { value: Math.PI * 2 },
-      angleStart: { value: 0.57 },
-      knotRadius: { value: 75 },
-      a: { value: 10 },
-      b: { value: 28 },
-      c: { value: 8 / 3 },
+      index: { value: length },
+      length: { value: length },
+      offsets: { value: offsets },
+      xAxis: { value: [1.0, 0.0, 0.0] },
+      yAxis: { value: [0.0, 1.0, 0.0] },
+      zAxis: { value: [0.0, 0.0, 1.0] },
+      a: { value: 1103515245 },
+      c: { value: 12345 },
+      m: { value: 2593123487 },
     };
 
     const vertexParameters = [
-      "uniform float time;",
-      "uniform float duration;",
-      "uniform float spiralAngle;",
-      "uniform float angleStart;",
-      "uniform float knotRadius;",
+      "uniform float index;",
+      "uniform float length;",
+
       "uniform float a;",
-      "uniform float b;",
       "uniform float c;",
+      "uniform float m;",
 
-      "attribute vec3 startPosition;",
-      "attribute vec3 midPosition;",
-      "attribute vec3 endPosition;",
-      "attribute vec3 offset;",
+      "uniform vec3 xAxis;",
+      "uniform vec3 yAxis;",
+      "uniform vec3 zAxis;",
 
-      "attribute float startTime;",
-      "attribute vec3 startColor;",
-      "attribute vec3 endColor;",
+      "attribute float ref;",
+      "attribute vec3 pos;",
+      "attribute vec3 rot;",
+
+      "float rand(float seed) {",
+      "float random1 = mod(((a * seed + c) / m) , 1.0);",
+      "float random2 = (0.5 - random1) * 0.015;",
+      "return random2;",
+      // "return 0.5;",
+      "}",
     ];
 
     const vertexPosition = [
-      "float progress = mod(max(time - startTime, 0.0) / duration, 1.0);",
-      // "float angle = angleStart + spiralAngle * progress;",
-      "vec3 pos;",
-      // "vec4 gl_Position;",
-      // "float startX = transformed.x + 0.01;",
-      // "if(transformed.x == 0.0) {",
-      // "startX = 0.01;",
-      // "} else {",
-      // "startX = transformed.x;",
-      // "};",
-      // "pos.x = knotRadius * (cos(angle) - 2.0 * cos(2.0 * angle));",
-      // "float dx = (a * (transformed.y - startX)) * 0.1;",
-      // "float dy = (startX * (b - transformed.z)) * 0.1;",
-      // "float dz = (startX * transformed.y - c * transformed.z) * 0.1;",
-      // "pos.x = startX + dx;",
-      // "pos.y = transformed.y + dy;",
-      // "pos.z = transformed.z + dz;",
-      "pos.x = 2.0;",
-      "pos.y = 0.0;",
-      "pos.z = 0.0;",
-      "transformed = pos;",
-      // "gl_Position = vec4(10,1,1,1);",
+      "vec3 offset;",
+      "float ind1 = mod((ref + index) , length);",
+      "offset.x = rand(ind1);",
+      "offset.y = rand(ind1*100.0);",
+      "offset.z = rand(ind1*300.0);",
+
+      "vec4 quatX = quatFromAxisAngle(xAxis, rot.x);",
+      "vec4 quatY = quatFromAxisAngle(yAxis, rot.y);",
+      "vec4 quatZ = quatFromAxisAngle(zAxis, rot.z);",
+
+      // "transformed = rotateVector(rot, transformed);",
+      "transformed = rotateVector(quatX, transformed);",
+      "transformed = rotateVector(quatY, transformed);",
+      "transformed = rotateVector(quatZ, transformed);",
+      // "transformed = rotateVector(rot, transformed);",
+      "transformed += pos;",
+      // "transformed += pos + offset;",
     ];
-
-    // const vertexParameters = [
-    //   "uniform float time;",
-    //   "uniform float duration;",
-
-    //   "attribute float startTime;",
-    // ];
-
-    // const vertexPosition = [
-    //   "float progress = clamp(time - startTime, 0.0, duration) / duration;",
-    //   "vec3 pos;",
-    //   "float angle = angleStart + spiralAngle * p;",
-
-    //   "pos.x = knotRadius * (cos(angle) - 2.0 * cos(2.0 * angle));",
-    //   "pos.y = knotRadius * (sin(angle) + 2.0 * sin(2.0 * angle));",
-    //   "pos.z = knotRadius * (sin(3.0 * angle));",
-    //   "transformed += pos",
-    // ];
 
     const material = new StandardAnimationMaterial({
       roughness: 0.5,
@@ -111,7 +94,8 @@ export const useBufferAnimation = ({ CONFIG }) => {
       uniforms,
       vertexParameters,
       vertexPosition,
-      color: "hotpink",
+      vertexFunctions: [ShaderChunk["quaternion_rotation"]],
+      color: "white",
     });
 
     geometryRef.current && geometryRef.current.dispose();
@@ -119,5 +103,5 @@ export const useBufferAnimation = ({ CONFIG }) => {
     geometryRef.current = geometry;
     materialRef.current = material;
     return [geometry, material];
-  }, [CONFIG]);
+  }, [positions, offsets]);
 };
