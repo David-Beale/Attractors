@@ -87,6 +87,7 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
       // roughness: 0.5,
       // metalness: 0.5,
       // vertexColors: THREE.VertexColors,
+      shading: THREE.FlatShading,
       uniforms,
       vertexParameters,
       vertexPosition,
