@@ -41,7 +41,6 @@ export default function Lorenz() {
     }
 
     const rotations = [];
-    const axis = new Vector3(1, 0, 0);
     for (let i = 0; i < length - 1; i++) {
       const currentVector = positions[i];
       const nextVector = positions[i + 1];
@@ -52,10 +51,9 @@ export default function Lorenz() {
         currentVector.z
       );
       scratchObject3D.lookAt(nextVector);
-      scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
-      rotations.push(scratchObject3D.rotation.toArray());
+      rotations.push(scratchObject3D.quaternion.toArray());
     }
-    rotations.push(scratchObject3D.rotation.toArray());
+    rotations.push(scratchObject3D.quaternion.toArray());
     return [positions, rotations];
   }, []);
 

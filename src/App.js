@@ -17,21 +17,21 @@ export default function App() {
         <Lorenz />
         <Stats className="stats" />
         <directionalLight
-          intensity={4}
+          intensity={3}
           position={[-1000, 0, 0]}
           color="hotpink"
         />
-        <directionalLight intensity={4} position={[1000, 0, 0]} color="teal" />
+        <directionalLight intensity={3} position={[1000, 0, 0]} color="teal" />
         <directionalLight
-          intensity={4}
+          intensity={3}
           position={[0, -1000, 0]}
           color="green"
         />
-        <directionalLight
-          intensity={0.2}
-          position={[0, -0, 100]}
-          color="white"
-        />
+        {/* <directionalLight
+          intensity={5}
+          position={[-1000, -1000, 0]}
+          color="yellow"
+        /> */}
         <Effects />
         <OrbitControls />
       </Canvas>

@@ -23,7 +23,7 @@ export default function Effects() {
     strength: 1,
     resolution: aspect,
     radius: 0.1,
-    threshold: 0.1,
+    threshold: 0.01,
   };
 
   return (
