@@ -22,16 +22,7 @@ export default function App() {
           color="hotpink"
         />
         <directionalLight intensity={5} position={[1000, 0, 0]} color="teal" />
-        <directionalLight
-          intensity={5}
-          position={[0, -1000, 0]}
-          color="green"
-        />
-        {/* <directionalLight
-          intensity={5}
-          position={[-1000, -1000, 0]}
-          color="yellow"
-        /> */}
+        <directionalLight intensity={5} position={[0, 0, 1000]} color="green" />
         <Effects />
         <OrbitControls />
       </Canvas>
