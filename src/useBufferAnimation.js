@@ -6,7 +6,7 @@ import {
   ShaderChunk,
   StandardAnimationMaterial,
 } from "three-bas";
-import { Quaternion } from "three";
+import { AdditiveBlending } from "three";
 
 export const useBufferAnimation = ({ positions, rotations, offsets }) => {
   const geometryRef = useRef(null);
@@ -21,13 +21,10 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
     const positionBuffer = geometry.createAttribute("pos", 3);
     const rotationBuffer = geometry.createAttribute("rot", 3);
     const referenceBuffer = geometry.createAttribute("ref", 1);
-    console.log(rotations);
     //loop through all new points
-    const qua = new Quaternion();
     for (let i = 0; i < length; i++) {
       geometry.setPrefabData(positionBuffer, i, positions[i].toArray());
-      geometry.setPrefabData(rotationBuffer, i, rotations[i].toArray());
-
+      geometry.setPrefabData(rotationBuffer, i, rotations[i]);
       geometry.setPrefabData(referenceBuffer, i, [i]);
     }
 
@@ -63,7 +60,6 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
       "float random1 = mod(((a * seed + c) / m) , 1.0);",
       "float random2 = (0.5 - random1) * 0.015;",
       "return random2;",
-      // "return 0.5;",
       "}",
     ];
 
@@ -74,17 +70,17 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
       "offset.y = rand(ind1*100.0);",
       "offset.z = rand(ind1*300.0);",
 
-      "vec4 quatX = quatFromAxisAngle(xAxis, rot.x);",
-      "vec4 quatY = quatFromAxisAngle(yAxis, rot.y);",
       "vec4 quatZ = quatFromAxisAngle(zAxis, rot.z);",
-
-      // "transformed = rotateVector(rot, transformed);",
-      "transformed = rotateVector(quatX, transformed);",
-      "transformed = rotateVector(quatY, transformed);",
       "transformed = rotateVector(quatZ, transformed);",
-      // "transformed = rotateVector(rot, transformed);",
-      "transformed += pos;",
-      // "transformed += pos + offset;",
+
+      "vec4 quatY = quatFromAxisAngle(yAxis, rot.y);",
+      "transformed = rotateVector(quatY, transformed);",
+
+      "vec4 quatX = quatFromAxisAngle(xAxis, rot.x);",
+      "transformed = rotateVector(quatX, transformed);",
+
+      "transformed += pos + offset;",
+      // "transformed += pos;",
     ];
 
     const material = new StandardAnimationMaterial({
@@ -96,6 +92,7 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
       vertexPosition,
       vertexFunctions: [ShaderChunk["quaternion_rotation"]],
       color: "white",
+      blending: AdditiveBlending,
     });
 
     geometryRef.current && geometryRef.current.dispose();
@@ -103,5 +100,5 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
     geometryRef.current = geometry;
     materialRef.current = material;
     return [geometry, material];
-  }, [positions, offsets]);
+  }, [positions, rotations, offsets]);
 };

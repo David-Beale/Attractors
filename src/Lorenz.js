@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 
 import { useFrame } from "@react-three/fiber";
-import { AdditiveBlending, Object3D, Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import { useBufferAnimation } from "./useBufferAnimation";
 
-const length = 1000;
+const length = 10000;
 const scratchObject3D = new Object3D();
-const currentVector = new Vector3();
 
 // const a = 10;
 // const b = 28;
@@ -21,7 +20,6 @@ const f = 0.1;
 
 export default function Lorenz() {
   const meshRef = useRef();
-  const index = useRef(length);
   const start = useRef(new Vector3(0.5, 1.0, 0.01));
 
   const [positions, rotations] = useMemo(() => {
@@ -54,26 +52,14 @@ export default function Lorenz() {
         currentVector.z
       );
       scratchObject3D.lookAt(nextVector);
-      // scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
-      rotations.push(scratchObject3D.rotation.clone());
+      scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
+      rotations.push(scratchObject3D.rotation.toArray());
     }
-    rotations.push(scratchObject3D.rotation.clone());
+    rotations.push(scratchObject3D.rotation.toArray());
     return [positions, rotations];
   }, []);
 
-  const offsets = useMemo(() => {
-    const newArray = [];
-    for (let i = 0; i < length; i++) {
-      newArray.push(
-        (0.5 - Math.random()) * 0.015,
-        (0.5 - Math.random()) * 0.015,
-        (0.5 - Math.random()) * 0.015
-      );
-    }
-    return newArray;
-  }, []);
-
-  const [geo, mat] = useBufferAnimation({ positions, rotations, offsets });
+  const [geo, mat] = useBufferAnimation({ positions, rotations });
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -82,53 +68,7 @@ export default function Lorenz() {
     if (uniforms.index.value === 0) uniforms.index.value = length;
   });
 
-  // useFrame(() => {
-  //   if (!meshRef.current) return;
-
-  //   for (let i = 0; i < length; i++) {
-  //     const ind1 = (i + index.current) % length;
-  //     const offset = offsets[ind1];
-  //     const vec1 = positions[i];
-  //     currentVector.addVectors(vec1, offset);
-
-  //     scratchObject3D.position.set(
-  //       currentVector.x,
-  //       currentVector.y,
-  //       currentVector.z
-  //     );
-
-  //     scratchObject3D.rotation.set(
-  //       rotations[i][0],
-  //       rotations[i][1],
-  //       rotations[i][2]
-  //     );
-
-  //     scratchObject3D.updateMatrix();
-  //     meshRef.current.setMatrixAt(i, scratchObject3D.matrix);
-  //   }
-  //   index.current--;
-  //   if (index.current === 0) index.current = length;
-  //   meshRef.current.instanceMatrix.needsUpdate = true;
-  // });
-
   return (
-    // <instancedMesh
-    //   ref={meshRef}
-    //   args={[null, null, length]}
-    //   frustumCulled={false}
-    // >
-    //   {/* <dodecahedronBufferGeometry args={[0.003, 0]} /> */}
-    //   <coneBufferGeometry
-    //     args={[0.003, 0.01, 3]}
-    //     rotation={[Math.PI / 2, 0, 0]}
-    //   />
-
-    //   <meshStandardMaterial
-    //     attach="material"
-    //     color="white"
-    //     blending={AdditiveBlending}
-    //   />
-    // </instancedMesh>
     <>
       {mat && (
         <mesh
