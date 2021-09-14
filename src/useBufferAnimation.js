@@ -1,5 +1,9 @@
 import * as THREE from "three";
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { Object3D, Vector3 } from "three";
+import { lorenz } from "./Attractors/lorenz";
+import { aizawa } from "./Attractors/aizawa";
 
 import {
   InstancedPrefabBufferGeometry,
@@ -8,30 +12,114 @@ import {
 } from "three-bas";
 import { AdditiveBlending } from "three";
 
-export const useBufferAnimation = ({ positions, rotations, offsets }) => {
+const getPositions = (func, length) => {
+  switch (func) {
+    case "lorenz":
+      return lorenz(length);
+    case "aizawa":
+      return aizawa(length);
+    default:
+      return lorenz(length);
+  }
+};
+
+const length = 25000;
+const scratchObject3D = new Object3D();
+
+export const useBufferAnimation = ({ meshRef, func, transition }) => {
+  const posRef = useRef();
+  const rotRef = useRef();
+  const prevFunc = useRef();
+
   const geometryRef = useRef(null);
   const materialRef = useRef(null);
 
+  const updateGeo = useCallback((name, array) => {
+    const tmpa = [];
+    const geometry = geometryRef.current;
+    const buffer = geometry.attributes[name];
+
+    for (let i = 0; i < length; i++) {
+      tmpa[0] = array[i][0];
+      tmpa[1] = array[i][1];
+      tmpa[2] = array[i][2];
+      geometry.setPrefabData(buffer, i, tmpa);
+    }
+    buffer.needsUpdate = true;
+  }, []);
+
+  useMemo(() => {
+    if (func === prevFunc.current) return;
+    prevFunc.current = func;
+
+    let positions = getPositions(func, length);
+
+    const rotations = [];
+    const axis = new Vector3(1, 0, 0);
+    for (let i = 0; i < length - 1; i++) {
+      const currentVector = positions[i];
+      const nextVector = positions[i + 1];
+
+      scratchObject3D.position.set(
+        currentVector.x,
+        currentVector.y,
+        currentVector.z
+      );
+      scratchObject3D.lookAt(nextVector);
+      scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
+      rotations.push(scratchObject3D.rotation.toArray());
+    }
+    rotations.push(scratchObject3D.rotation.toArray());
+
+    positions = positions.map((vec) => vec.toArray());
+
+    if (posRef.current) {
+      meshRef.current.material.uniforms.progress.value = 0;
+      updateGeo("prev", posRef.current);
+      updateGeo("pos", positions);
+      updateGeo("rot", rotations);
+    }
+    posRef.current = positions;
+    rotRef.current = rotations;
+  }, [func, updateGeo, meshRef]);
+
+  useFrame(() => {
+    if (!meshRef.current) return;
+    const uniforms = meshRef.current.material.uniforms;
+    if (transition.current) {
+      uniforms.progress.value += 0.01;
+      if (uniforms.progress.value > 1) {
+        uniforms.progress.value = -1;
+        transition.current = false;
+      }
+    } else {
+      uniforms.index.value--;
+      if (uniforms.index.value === 0) uniforms.index.value = length;
+    }
+  });
+
   return useMemo(() => {
-    const length = positions.length;
+    const length = posRef.current.length;
 
     const prefab = new THREE.ConeBufferGeometry(0.003, 0.01, 3);
     const geometry = new InstancedPrefabBufferGeometry(prefab, length);
 
+    geometry.createAttribute("prev", 3);
     const positionBuffer = geometry.createAttribute("pos", 3);
     const rotationBuffer = geometry.createAttribute("rot", 3);
     const referenceBuffer = geometry.createAttribute("ref", 1);
+
     //loop through all new points
     for (let i = 0; i < length; i++) {
-      geometry.setPrefabData(positionBuffer, i, positions[i].toArray());
-      geometry.setPrefabData(rotationBuffer, i, rotations[i]);
+      geometry.setPrefabData(positionBuffer, i, posRef.current[i]);
+      geometry.setPrefabData(rotationBuffer, i, rotRef.current[i]);
       geometry.setPrefabData(referenceBuffer, i, [i]);
     }
 
     const uniforms = {
+      progress: { value: -1 },
       index: { value: length },
       length: { value: length },
-      offsets: { value: offsets },
       a: { value: 1103515245 },
       c: { value: 12345 },
       m: { value: 2593123487 },
@@ -41,6 +129,7 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
     };
 
     const vertexParameters = [
+      "uniform float progress;",
       "uniform float index;",
       "uniform float length;",
 
@@ -54,6 +143,7 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
 
       "attribute float ref;",
       "attribute vec3 pos;",
+      "attribute vec3 prev;",
       "attribute vec3 rot;",
 
       "float rand(float seed) {",
@@ -69,12 +159,22 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
       "offset.y = rand(ind1*100.0);",
       "offset.z = rand(ind1*300.0);",
 
+      "if(progress > 0.0) {",
+      "float time = easeCubicInOut(progress);",
+      "transformed = rotateVector(quatZ, transformed);",
+      "transformed = rotateVector(quatY, transformed);",
+      "transformed = rotateVector(quatX, transformed);",
+      "transformed += mix(prev + offset, pos + offset, time);",
+      // "transformed += mix(prevPos, pos, progress);",
+      // "transformed += prevPos + offset;",
+      "} else {",
       "transformed = rotateVector(quatZ, transformed);",
       "transformed = rotateVector(quatY, transformed);",
       "transformed = rotateVector(quatX, transformed);",
 
       "transformed += pos + offset;",
       // "transformed += pos;",
+      "};",
     ];
 
     const material = new StandardAnimationMaterial({
@@ -93,7 +193,10 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
         "objectNormal  = rotateVector(quatX, objectNormal );",
       ],
       vertexPosition,
-      vertexFunctions: [ShaderChunk["quaternion_rotation"]],
+      vertexFunctions: [
+        ShaderChunk["quaternion_rotation"],
+        ShaderChunk["ease_cubic_in_out"],
+      ],
       color: "white",
       blending: AdditiveBlending,
     });
@@ -104,5 +207,5 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
     geometryRef.current = geometry;
     materialRef.current = material;
     return [geometry, material];
-  }, [positions, rotations, offsets]);
+  }, [posRef, rotRef]);
 };

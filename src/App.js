@@ -1,20 +1,29 @@
 import "./App.css";
 import { OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import Lorenz from "./Lorenz";
+import Particles from "./Particles";
 import Effects from "./Effects/Effects";
+import { useRef, useState } from "react";
 
 export default function App() {
+  const [func, setFunc] = useState("lorenz");
+  const transition = useRef(false);
+
+  const onClick = () => {
+    if (transition.current) return;
+    transition.current = true;
+    setFunc((prev) => (prev === "lorenz" ? "aizawa" : "lorenz"));
+  };
   return (
-    <div className="container">
+    <div className="container" onClick={onClick}>
       <Canvas
         camera={{
-          position: [0, 0, 3],
+          position: [0, 0, 4],
           fov: 40,
           far: 1000,
         }}
       >
-        <Lorenz />
+        <Particles func={func} transition={transition} />
         <Stats className="stats" />
         <directionalLight
           intensity={5}
