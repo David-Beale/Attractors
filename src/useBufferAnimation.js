@@ -75,7 +75,8 @@ export const useBufferAnimation = ({ meshRef, func, transition }) => {
 
     if (posRef.current) {
       meshRef.current.material.uniforms.progress.value = 0;
-      updateGeo("prev", posRef.current);
+      updateGeo("prevPos", posRef.current);
+      updateGeo("prevRot", rotRef.current);
       updateGeo("pos", positions);
       updateGeo("rot", rotations);
     }
@@ -104,7 +105,8 @@ export const useBufferAnimation = ({ meshRef, func, transition }) => {
     const prefab = new THREE.ConeBufferGeometry(0.003, 0.01, 3);
     const geometry = new InstancedPrefabBufferGeometry(prefab, length);
 
-    geometry.createAttribute("prev", 3);
+    geometry.createAttribute("prevPos", 3);
+    geometry.createAttribute("prevRot", 3);
     const positionBuffer = geometry.createAttribute("pos", 3);
     const rotationBuffer = geometry.createAttribute("rot", 3);
     const referenceBuffer = geometry.createAttribute("ref", 1);
@@ -143,7 +145,8 @@ export const useBufferAnimation = ({ meshRef, func, transition }) => {
 
       "attribute float ref;",
       "attribute vec3 pos;",
-      "attribute vec3 prev;",
+      "attribute vec3 prevPos;",
+      "attribute vec3 prevRot;",
       "attribute vec3 rot;",
 
       "float rand(float seed) {",
@@ -159,21 +162,15 @@ export const useBufferAnimation = ({ meshRef, func, transition }) => {
       "offset.y = rand(ind1*100.0);",
       "offset.z = rand(ind1*300.0);",
 
-      "if(progress > 0.0) {",
-      "float time = easeCubicInOut(progress);",
-      "transformed = rotateVector(quatZ, transformed);",
-      "transformed = rotateVector(quatY, transformed);",
-      "transformed = rotateVector(quatX, transformed);",
-      "transformed += mix(prev + offset, pos + offset, time);",
-      // "transformed += mix(prevPos, pos, progress);",
-      // "transformed += prevPos + offset;",
-      "} else {",
       "transformed = rotateVector(quatZ, transformed);",
       "transformed = rotateVector(quatY, transformed);",
       "transformed = rotateVector(quatX, transformed);",
 
+      "if(progress > 0.0) {",
+      "float time = easeCubicInOut(progress);",
+      "transformed += mix(prevPos + offset, pos + offset, time);",
+      "} else {",
       "transformed += pos + offset;",
-      // "transformed += pos;",
       "};",
     ];
 
@@ -183,13 +180,20 @@ export const useBufferAnimation = ({ meshRef, func, transition }) => {
       uniforms,
       vertexParameters,
       vertexNormal: [
-        "vec4 quatZ = quatFromAxisAngle(zAxis, rot.z);",
+        "vec3 rotation;",
+        "if(progress > 0.0) {",
+        "float time = easeCubicInOut(progress);",
+        "rotation = mix(prevRot, rot, progress);",
+        "} else {",
+        "rotation = rot;",
+        "};",
+        "vec4 quatZ = quatFromAxisAngle(zAxis, rotation.z);",
         "objectNormal  = rotateVector(quatZ, objectNormal );",
 
-        "vec4 quatY = quatFromAxisAngle(yAxis, rot.y);",
+        "vec4 quatY = quatFromAxisAngle(yAxis, rotation.y);",
         "objectNormal  = rotateVector(quatY, objectNormal );",
 
-        "vec4 quatX = quatFromAxisAngle(xAxis, rot.x);",
+        "vec4 quatX = quatFromAxisAngle(xAxis, rotation.x);",
         "objectNormal  = rotateVector(quatX, objectNormal );",
       ],
       vertexPosition,
