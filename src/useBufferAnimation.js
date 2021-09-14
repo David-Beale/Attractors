@@ -78,10 +78,8 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
     ];
 
     const material = new StandardAnimationMaterial({
-      // roughness: 0.5,
-      // metalness: 0.5,
-      // vertexColors: THREE.VertexColors,
-      // shading: THREE.FlatShading,
+      roughness: 0.9,
+      metalness: 0.1,
       uniforms,
       vertexParameters,
       vertexNormal: [

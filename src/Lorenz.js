@@ -7,20 +7,21 @@ import { useBufferAnimation } from "./useBufferAnimation";
 const length = 10000;
 const scratchObject3D = new Object3D();
 
-// const a = 10;
-// const b = 28;
-// const c = 8 / 3;
+const a = 10;
+const b = 28;
+const c = 8 / 3;
 
-const a = 0.95;
-const b = 0.7;
-const c = 0.6;
-const d = 3.5;
-const e = 0.25;
-const f = 0.1;
+// const a = 0.95;
+// const b = 0.7;
+// const c = 0.6;
+// const d = 3.5;
+// const e = 0.25;
+// const f = 0.1;
 
 export default function Lorenz() {
   const meshRef = useRef();
-  const start = useRef(new Vector3(0.5, 1.0, 0.01));
+  // const start = useRef(new Vector3(0.5, 1.0, 0.01));
+  const start = useRef(new Vector3(0.1, 0, 0));
 
   const [positions, rotations] = useMemo(() => {
     const positions = [];
@@ -29,16 +30,20 @@ export default function Lorenz() {
     for (let i = 0; i < length; i++) {
       const { x, y, z } = vec;
       positions.push(vec.clone());
-      vec.x += ((z - b) * x - d * y) * 0.01;
-      vec.y += (d * x + (z - b) * y) * 0.01;
-      vec.z +=
-        (c +
-          a * z -
-          (z * z * z) / 3 -
-          ((x * x + y * y) * 1 + e * z) +
-          f * z * (x * x * x)) *
-        0.01;
+      vec.x += a * (y - x) * 0.01;
+      vec.y += x * (b - z) * 0.01;
+      vec.z += (x * y - c * z) * 0.01;
+      // vec.x += ((z - b) * x - d * y) * 0.01;
+      // vec.y += (d * x + (z - b) * y) * 0.01;
+      // vec.z +=
+      //   (c +
+      //     a * z -
+      //     (z * z * z) / 3 -
+      //     ((x * x + y * y) * 1 + e * z) +
+      //     f * z * (x * x * x)) *
+      //   0.01;
     }
+    positions.forEach((vec) => vec.multiplyScalar(0.04));
 
     const rotations = [];
     const axis = new Vector3(1, 0, 0);
