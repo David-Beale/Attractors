@@ -57,9 +57,8 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
       "attribute vec3 rot;",
 
       "float rand(float seed) {",
-      "float random1 = mod(((a * seed + c) / m) , 1.0);",
-      "float random2 = (0.5 - random1) * 0.015;",
-      "return random2;",
+      "float random1 = fract(((a * seed + c) / m));",
+      "return (0.5 - random1) * 0.015;",
       "}",
     ];
 
@@ -70,13 +69,8 @@ export const useBufferAnimation = ({ positions, rotations, offsets }) => {
       "offset.y = rand(ind1*100.0);",
       "offset.z = rand(ind1*300.0);",
 
-      // "vec4 quatZ = quatFromAxisAngle(zAxis, rot.z);",
       "transformed = rotateVector(quatZ, transformed);",
-
-      // "vec4 quatY = quatFromAxisAngle(yAxis, rot.y);",
       "transformed = rotateVector(quatY, transformed);",
-
-      // "vec4 quatX = quatFromAxisAngle(xAxis, rot.x);",
       "transformed = rotateVector(quatX, transformed);",
 
       "transformed += pos + offset;",
