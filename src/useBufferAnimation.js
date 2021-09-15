@@ -26,7 +26,8 @@ const getPositions = (func, length) => {
 const length = 25000;
 const scratchObject3D = new Object3D();
 
-export const useBufferAnimation = ({ meshRef, func, transition }) => {
+export const useBufferAnimation = ({ func, transition }) => {
+  const meshRef = useRef();
   const posRef = useRef();
   const rotRef = useRef();
   const prevFunc = useRef();
@@ -210,6 +211,6 @@ export const useBufferAnimation = ({ meshRef, func, transition }) => {
     materialRef.current && materialRef.current.dispose();
     geometryRef.current = geometry;
     materialRef.current = material;
-    return [geometry, material];
+    return [meshRef, geometry, material];
   }, [posRef, rotRef]);
 };
