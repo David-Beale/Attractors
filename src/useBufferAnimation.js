@@ -93,67 +93,44 @@ export const useBufferAnimation = ({ func, transition }) => {
       geometry.setPrefabData(referenceBuffer, i, [i]);
     }
 
-    const uniforms = {
-      progress: { value: -1 },
-      index: { value: length },
-      length: { value: length },
-      a: { value: 1103515245 },
-      c: { value: 12345 },
-      m: { value: 2593123487 },
-      xAxis: { value: [1.0, 0.0, 0.0] },
-      yAxis: { value: [0.0, 1.0, 0.0] },
-      zAxis: { value: [0.0, 0.0, 1.0] },
-    };
-
-    const vertexParameters = [
-      "uniform float progress;",
-      "uniform float index;",
-      "uniform float length;",
-
-      "uniform float a;",
-      "uniform float c;",
-      "uniform float m;",
-
-      "uniform vec3 xAxis;",
-      "uniform vec3 yAxis;",
-      "uniform vec3 zAxis;",
-
-      "attribute float ref;",
-      "attribute vec3 pos;",
-      "attribute vec3 prevPos;",
-      "attribute vec3 prevRot;",
-      "attribute vec3 rot;",
-
-      "float rand(float seed) {",
-      "float random1 = fract(((a * seed + c) / m));",
-      "return (0.5 - random1) * 0.015;",
-      "}",
-    ];
-
-    const vertexPosition = [
-      "vec3 offset;",
-      "float ind1 = mod((ref + index) , length);",
-      "offset.x = rand(ind1);",
-      "offset.y = rand(ind1*100.0);",
-      "offset.z = rand(ind1*300.0);",
-
-      "transformed = rotateVector(quatZ, transformed);",
-      "transformed = rotateVector(quatY, transformed);",
-      "transformed = rotateVector(quatX, transformed);",
-
-      "if(progress > 0.0) {",
-      "float time = easeCubicInOut(progress);",
-      "transformed += mix(prevPos + offset, pos + offset, time);",
-      "} else {",
-      "transformed += pos + offset;",
-      "};",
-    ];
-
     const material = new StandardAnimationMaterial({
       roughness: 0.9,
       metalness: 0.1,
-      uniforms,
-      vertexParameters,
+      uniforms: {
+        progress: { value: -1 },
+        index: { value: length },
+        length: { value: length },
+        a: { value: 1103515245 },
+        c: { value: 12345 },
+        m: { value: 2593123487 },
+        xAxis: { value: [1.0, 0.0, 0.0] },
+        yAxis: { value: [0.0, 1.0, 0.0] },
+        zAxis: { value: [0.0, 0.0, 1.0] },
+      },
+      vertexParameters: [
+        "uniform float progress;",
+        "uniform float index;",
+        "uniform float length;",
+
+        "uniform float a;",
+        "uniform float c;",
+        "uniform float m;",
+
+        "uniform vec3 xAxis;",
+        "uniform vec3 yAxis;",
+        "uniform vec3 zAxis;",
+
+        "attribute float ref;",
+        "attribute vec3 pos;",
+        "attribute vec3 prevPos;",
+        "attribute vec3 prevRot;",
+        "attribute vec3 rot;",
+
+        "float rand(float seed) {",
+        "float random1 = fract(((a * seed + c) / m));",
+        "return (0.5 - random1) * 0.015;",
+        "}",
+      ],
       vertexNormal: [
         "vec3 rotation;",
         "if(progress > 0.0) {",
@@ -171,7 +148,24 @@ export const useBufferAnimation = ({ func, transition }) => {
         "vec4 quatX = quatFromAxisAngle(xAxis, rotation.x);",
         "objectNormal  = rotateVector(quatX, objectNormal );",
       ],
-      vertexPosition,
+      vertexPosition: [
+        "vec3 offset;",
+        "float ind1 = mod((ref + index) , length);",
+        "offset.x = rand(ind1);",
+        "offset.y = rand(ind1*100.0);",
+        "offset.z = rand(ind1*300.0);",
+
+        "transformed = rotateVector(quatZ, transformed);",
+        "transformed = rotateVector(quatY, transformed);",
+        "transformed = rotateVector(quatX, transformed);",
+
+        "if(progress > 0.0) {",
+        "float time = easeCubicInOut(progress);",
+        "transformed += mix(prevPos + offset, pos + offset, time);",
+        "} else {",
+        "transformed += pos + offset;",
+        "};",
+      ],
       vertexFunctions: [
         ShaderChunk["quaternion_rotation"],
         ShaderChunk["ease_cubic_in_out"],
