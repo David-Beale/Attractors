@@ -4,10 +4,12 @@ importScripts("three.min.js");
 importScripts("minMaxVectors.js");
 importScripts("aizawa.js");
 importScripts("lorenz.js");
+importScripts("halvorsen.js");
 
 const functions = {
   aizawa,
   lorenz,
+  halvorsen,
 };
 
 const parameters = {
@@ -23,6 +25,9 @@ const parameters = {
     d: 3.5,
     e: 0.25,
     f: 0.1,
+  },
+  halvorsen: {
+    a: 1.89,
   },
 };
 const scratchObject3D = new THREE.Object3D();

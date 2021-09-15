@@ -8,7 +8,7 @@ import Rig from "./Rig/Rig";
 import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 
 export default function App() {
-  const [func, setFunc] = useState("aizawa");
+  const [func, setFunc] = useState("halvorsen");
   const transition = useRef(false);
 
   const onClick = () => {
