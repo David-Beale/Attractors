@@ -16,7 +16,7 @@ export default function Rig({ mouse }) {
     const r = mouse.current[2];
     const newTheta = prevTheta.current + speed * (theta - prevTheta.current);
     const newPhi = prevPhi.current + speed * (phi - prevPhi.current);
-    const newR = prevR.current + speed * (r - prevR.current);
+    const newR = prevR.current + 0.1 * (r - prevR.current);
     target.setFromSphericalCoords(newR, newPhi, newTheta);
     camera.position.x = target.x;
     camera.position.y = target.y;

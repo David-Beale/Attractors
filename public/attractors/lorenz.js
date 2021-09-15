@@ -6,11 +6,11 @@ const lorenz = (length, parameters) => {
   const positions = [];
   const vec = new THREE.Vector3(0.1, 0, 0);
 
-  const [updateMinMax, getCenter] = minMaxVectors();
+  const [updateSums, getCenter] = minMaxVectors();
 
   for (let i = 0; i < length; i++) {
     const { x, y, z } = vec;
-    updateMinMax(x, y, z);
+    updateSums(x, y, z);
     positions.push(vec.clone());
     vec.x += a * (y - x) * 0.002;
     vec.y += x * (b - z) * 0.002;

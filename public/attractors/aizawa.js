@@ -6,11 +6,11 @@ const aizawa = (length, parameters) => {
   const positions = [];
   const vec = new THREE.Vector3(0.5, 1.0, 0.01);
 
-  const [updateMinMax, getCenter] = minMaxVectors();
+  const [updateSums, getCenter] = minMaxVectors();
 
   for (let i = 0; i < length; i++) {
     const { x, y, z } = vec;
-    updateMinMax(x, y, z);
+    updateSums(x, y, z);
     positions.push(vec.clone());
     vec.x += ((z - b) * x - d * y) * 0.01;
     vec.y += (d * x + (z - b) * y) * 0.01;
