@@ -1,13 +1,10 @@
-import { Vector3 } from "three";
-import { minMaxVectors } from "./minMaxVectors";
+/* eslint-disable no-undef */
+/* eslint-disable no-restricted-globals */
 
-const a = 10;
-const b = 28;
-const c = 8 / 3;
-
-export const lorenz = (length) => {
+const lorenz = (length, parameters) => {
+  const { a, b, c } = parameters;
   const positions = [];
-  const vec = new Vector3(0.1, 0, 0);
+  const vec = new THREE.Vector3(0.1, 0, 0);
 
   const [updateMinMax, getCenter] = minMaxVectors();
 

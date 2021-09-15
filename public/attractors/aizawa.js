@@ -1,16 +1,10 @@
-import { Vector3 } from "three";
-import { minMaxVectors } from "./minMaxVectors";
+/* eslint-disable no-undef */
+/* eslint-disable no-restricted-globals */
 
-const a = 0.95;
-const b = 0.7;
-const c = 0.6;
-const d = 3.5;
-const e = 0.25;
-const f = 0.1;
-
-export const aizawa = (length) => {
+const aizawa = (length, parameters) => {
+  const { a, b, c, d, e, f } = parameters;
   const positions = [];
-  const vec = new Vector3(0.5, 1.0, 0.01);
+  const vec = new THREE.Vector3(0.5, 1.0, 0.01);
 
   const [updateMinMax, getCenter] = minMaxVectors();
 

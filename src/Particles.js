@@ -7,16 +7,6 @@ export default function Lorenz({ func, transition }) {
   });
 
   return (
-    <>
-      {mat && (
-        <mesh
-          // rotation={[-1.571, 0, -0.8]}
-          frustumCulled={false}
-          ref={meshRef}
-          material={mat}
-          geometry={geo}
-        />
-      )}
-    </>
+    <mesh frustumCulled={false} ref={meshRef} material={mat} geometry={geo} />
   );
 }

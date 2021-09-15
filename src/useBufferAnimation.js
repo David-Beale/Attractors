@@ -1,9 +1,6 @@
 import * as THREE from "three";
-import { useCallback, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Object3D, Vector3 } from "three";
-import { lorenz } from "./Attractors/lorenz";
-import { aizawa } from "./Attractors/aizawa";
 
 import {
   InstancedPrefabBufferGeometry,
@@ -12,83 +9,59 @@ import {
 } from "three-bas";
 import { AdditiveBlending } from "three";
 
-const getPositions = (func, length) => {
-  switch (func) {
-    case "lorenz":
-      return lorenz(length);
-    case "aizawa":
-      return aizawa(length);
-    default:
-      return lorenz(length);
-  }
-};
+const worker = new Worker("./attractors/attractors.js");
 
 const length = 25000;
-const scratchObject3D = new Object3D();
 
 export const useBufferAnimation = ({ func, transition }) => {
   const meshRef = useRef();
   const posRef = useRef();
   const rotRef = useRef();
-  const prevFunc = useRef();
 
   const geometryRef = useRef(null);
   const materialRef = useRef(null);
 
-  const updateGeo = useCallback((name, array) => {
-    const tmpa = [];
-    const geometry = geometryRef.current;
-    const buffer = geometry.attributes[name];
+  const [init, setInit] = useState(false);
 
-    for (let i = 0; i < length; i++) {
-      tmpa[0] = array[i][0];
-      tmpa[1] = array[i][1];
-      tmpa[2] = array[i][2];
-      geometry.setPrefabData(buffer, i, tmpa);
-    }
-    buffer.needsUpdate = true;
-  }, []);
+  useEffect(() => {
+    worker.postMessage({ func, length });
+  }, [func]);
 
-  useMemo(() => {
-    if (func === prevFunc.current) return;
-    prevFunc.current = func;
+  useEffect(() => {
+    const updateGeo = (name, array) => {
+      const tmpa = [];
+      const geometry = geometryRef.current;
+      const buffer = geometry.attributes[name];
 
-    let positions = getPositions(func, length);
+      for (let i = 0; i < length; i++) {
+        tmpa[0] = array[i][0];
+        tmpa[1] = array[i][1];
+        tmpa[2] = array[i][2];
+        geometry.setPrefabData(buffer, i, tmpa);
+      }
+      buffer.needsUpdate = true;
+    };
 
-    const rotations = [];
-    const axis = new Vector3(1, 0, 0);
-    for (let i = 0; i < length - 1; i++) {
-      const currentVector = positions[i];
-      const nextVector = positions[i + 1];
-
-      scratchObject3D.position.set(
-        currentVector.x,
-        currentVector.y,
-        currentVector.z
-      );
-      scratchObject3D.lookAt(nextVector);
-      scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
-      rotations.push(scratchObject3D.rotation.toArray());
-    }
-    rotations.push(scratchObject3D.rotation.toArray());
-
-    positions = positions.map((vec) => vec.toArray());
-
-    if (posRef.current) {
-      meshRef.current.material.uniforms.progress.value = 0;
-      updateGeo("prevPos", posRef.current);
-      updateGeo("prevRot", rotRef.current);
-      updateGeo("pos", positions);
-      updateGeo("rot", rotations);
-    }
-    posRef.current = positions;
-    rotRef.current = rotations;
-  }, [func, updateGeo, meshRef]);
+    worker.onmessage = (e) => {
+      const { positions, rotations } = e.data;
+      //only update geo if it already exists
+      if (posRef.current) {
+        updateGeo("prevPos", posRef.current);
+        updateGeo("prevRot", rotRef.current);
+        updateGeo("pos", positions);
+        updateGeo("rot", rotations);
+        meshRef.current.material.uniforms.progress.value = 0;
+      }
+      posRef.current = positions;
+      rotRef.current = rotations;
+      setInit(true);
+    };
+  }, [meshRef]);
 
   useFrame(() => {
     if (!meshRef.current) return;
     const uniforms = meshRef.current.material.uniforms;
-    if (transition.current) {
+    if (uniforms.progress.value >= 0) {
       uniforms.progress.value += 0.01;
       if (uniforms.progress.value > 1) {
         uniforms.progress.value = -1;
@@ -101,6 +74,7 @@ export const useBufferAnimation = ({ func, transition }) => {
   });
 
   return useMemo(() => {
+    if (!init) return [];
     const length = posRef.current.length;
 
     const prefab = new THREE.ConeBufferGeometry(0.003, 0.01, 3);
@@ -212,5 +186,5 @@ export const useBufferAnimation = ({ func, transition }) => {
     geometryRef.current = geometry;
     materialRef.current = material;
     return [meshRef, geometry, material];
-  }, [posRef, rotRef]);
+  }, [init]);
 };

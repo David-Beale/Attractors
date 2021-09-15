@@ -1,7 +1,9 @@
-import { Vector3 } from "three";
-export const minMaxVectors = () => {
-  const min = new Vector3(Infinity, Infinity, Infinity);
-  const max = new Vector3(-Infinity, -Infinity, -Infinity);
+/* eslint-disable no-undef */
+/* eslint-disable no-restricted-globals */
+
+const minMaxVectors = () => {
+  const min = new THREE.Vector3(Infinity, Infinity, Infinity);
+  const max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
 
   const updateMinMax = (x, y, z) => {
     if (x < min.x) min.x = x;
