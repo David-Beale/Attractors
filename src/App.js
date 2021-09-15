@@ -1,12 +1,14 @@
 import "./App.css";
-import { OrbitControls, Stats } from "@react-three/drei";
+import { useRef, useState } from "react";
+import { Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Particles from "./Particles";
 import Effects from "./Effects/Effects";
-import { useRef, useState } from "react";
+import Rig from "./Rig/Rig";
+import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 
 export default function App() {
-  const [func, setFunc] = useState("lorenz");
+  const [func, setFunc] = useState("aizawa");
   const transition = useRef(false);
 
   const onClick = () => {
@@ -14,8 +16,16 @@ export default function App() {
     transition.current = true;
     setFunc((prev) => (prev === "lorenz" ? "aizawa" : "lorenz"));
   };
+
+  const [mouse, onMouseMove, onWheel] = useRigMouseEvents();
+
   return (
-    <div className="container" onClick={onClick}>
+    <div
+      className="container"
+      onClick={onClick}
+      onPointerMove={onMouseMove}
+      onWheel={onWheel}
+    >
       <Canvas
         camera={{
           position: [0, 0, 4],
@@ -36,13 +46,8 @@ export default function App() {
           position={[0, -1000, 0]}
           color="green"
         />
-        {/* <directionalLight
-          intensity={5}
-          position={[-1000, -1000, 0]}
-          color="yellow"
-        /> */}
         <Effects />
-        <OrbitControls />
+        <Rig mouse={mouse} />
       </Canvas>
     </div>
   );
