@@ -15,6 +15,7 @@ importScripts("functions/threeScroll1.js");
 importScripts("functions/threeScroll2.js");
 importScripts("functions/sprott.js");
 importScripts("functions/fourwing.js");
+importScripts("functions/lorenzMod2.js");
 
 const functions = {
   aizawa,
@@ -30,6 +31,7 @@ const functions = {
   threeScroll2,
   sprott,
   fourwing,
+  lorenzMod2,
 };
 
 const parameters = {
@@ -102,6 +104,12 @@ const parameters = {
     a: 0.2,
     b: 0.01,
     c: -0.4,
+  },
+  lorenzMod2: {
+    a: 0.9,
+    b: 5.0,
+    c: 9.9,
+    d: 1.0,
   },
 };
 const scratchObject3D = new THREE.Object3D();
