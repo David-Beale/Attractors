@@ -2,30 +2,21 @@ import "./App.css";
 import { useRef, useState } from "react";
 import { Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import Particles from "./Particles";
+import Particles from "./Particles/Particles";
 import Effects from "./Effects/Effects";
 import Rig from "./Rig/Rig";
 import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
+import Menu from "./Menu/Menu";
 
 export default function App() {
   const [func, setFunc] = useState("arneodo");
   const transition = useRef(false);
 
-  const onClick = () => {
-    if (transition.current) return;
-    transition.current = true;
-    setFunc((prev) => (prev === "lorenz" ? "aizawa" : "lorenz"));
-  };
-
   const [mouse, onMouseMove, onWheel] = useRigMouseEvents();
 
   return (
-    <div
-      className="container"
-      onClick={onClick}
-      onPointerMove={onMouseMove}
-      onWheel={onWheel}
-    >
+    <div className="container" onPointerMove={onMouseMove} onWheel={onWheel}>
+      <Menu func={func} setFunc={setFunc} transition={transition} />
       <Canvas
         camera={{
           position: [0, 0, 4],

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
     "@react-three/drei": "^7.7.0",
     "@react-three/fiber": "^7.0.6",
     "@testing-library/jest-dom": "^5.11.4",
@@ -11,6 +12,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "styled-components": "^5.3.1",
     "three": "^0.132.2",
     "three-bas": "^2.13.0",
     "web-vitals": "^1.0.1"
