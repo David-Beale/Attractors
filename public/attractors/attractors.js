@@ -1,15 +1,17 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-restricted-globals */
-importScripts("three.min.js");
-importScripts("minMaxVectors.js");
-importScripts("aizawa.js");
-importScripts("lorenz.js");
-importScripts("halvorsen.js");
+importScripts("helpers/three.min.js");
+importScripts("helpers/minMaxVectors.js");
+importScripts("functions/aizawa.js");
+importScripts("functions/lorenz.js");
+importScripts("functions/halvorsen.js");
+importScripts("functions/thomas.js");
 
 const functions = {
   aizawa,
   lorenz,
   halvorsen,
+  thomas,
 };
 
 const parameters = {
@@ -28,6 +30,9 @@ const parameters = {
   },
   halvorsen: {
     a: 1.89,
+  },
+  thomas: {
+    b: 0.208186,
   },
 };
 const scratchObject3D = new THREE.Object3D();
