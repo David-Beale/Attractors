@@ -1,21 +1,17 @@
 import styled from "styled-components";
 import { IconButton } from "@material-ui/core";
 
-const topShadow = "#1c1d1f";
-const bottomShadow = "#18838A";
-const bottomShadowEnabled = "#1FB143";
-const blue = "rgb(24, 235, 254)";
-
 export const Container = styled.div`
   width: 400px;
+  height: 100vh;
   padding: 60px 25px 0 25px;
-  background-color: transparent;
+  background-color: #ecf0f3;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   font-size: 1.1rem;
   font-weight: 600;
-  color: ${blue};
+  color: darkslategray;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 `;
@@ -39,7 +35,7 @@ export const SubContainer = styled.div`
   padding: 20px;
   width: 100%;
   border-radius: 10px;
-  box-shadow: 0 0 10px -1px ${blue};
+  box-shadow: 0 0 10px -1px slategray;
   height: 70px;
 `;
 export const Row = styled.div`
@@ -54,10 +50,9 @@ export const ButtonsOuterContainer = styled.div`
   align-items: center;
   justify-content: flex-start;
   margin: 5px 0;
-  padding: 0px;
   width: 100%;
   border-radius: 10px;
-  box-shadow: 0 0 10px -1px ${blue};
+  box-shadow: 0 0 10px -1px slategray;
   height: 315px;
 `;
 export const ButtonContainer = styled.div`
@@ -71,25 +66,14 @@ export const ButtonContainer = styled.div`
 `;
 
 export const StyledIconButton = styled(IconButton)`
-  color: ${blue};
   font-size: 1.2rem;
+  color: darkslategray;
   font-weight: 600;
   height: 50px;
   width: 50px;
   margin: 10px;
   box-shadow: ${(props) =>
     props.enabled
-      ? `inset -4px -4px 8px ${bottomShadow}, inset 8px 8px 16px ${topShadow}`
-      : `-6px -6px 10px ${bottomShadow}, 6px 6px 10px ${topShadow}`};
-`;
-
-export const StyledIconButtonTop = styled(IconButton)`
-  margin: 0 10px;
-  color: black;
-  height: 45px;
-  width: 45px;
-  box-shadow: ${(props) =>
-    props.enabled
-      ? `inset -4px -4px 8px ${topShadow}, inset 8px 8px 16px ${bottomShadow}`
-      : `-6px -6px 10px ${topShadow}, 6px 6px 10px ${bottomShadow}`};
+      ? "inset -4px -4px 8px rgba(255, 255, 255, 0.6), inset 8px 8px 16px rgba(0, 0, 0, 0.2)"
+      : "-6px -6px 10px rgba(255, 255, 255, 0.7), 6px 6px 10px rgba(0, 0, 0, 0.3)"};
 `;

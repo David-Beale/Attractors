@@ -5,12 +5,12 @@ export const Icon = styled.div`
   height: 20px;
   position: fixed;
   top: 15px;
-  left: 25px;
+  right: 25px;
   z-index: 1201;
   cursor: pointer;
 
   span {
-    background: rgb(24, 235, 254);
+    background: ${({ open }) => (open ? "black" : "white")};
     display: block;
     position: absolute;
     height: 4px;
@@ -29,26 +29,24 @@ export const Icon = styled.div`
   }
 
   span:nth-child(1) {
-    top: ${(props) => (props.open ? "8px" : "0px")};
-    -webkit-transform: ${(props) =>
-      props.open ? "rotate(135deg)" : "initial"};
-    -moz-transform: ${(props) => (props.open ? "rotate(135deg)" : "initial")};
-    -o-transform: ${(props) => (props.open ? "rotate(135deg)" : "initial")};
-    transform: ${(props) => (props.open ? "rotate(135deg)" : "initial")};
+    top: ${({ open }) => (open ? "8px" : "0px")};
+    -webkit-transform: ${({ open }) => (open ? "rotate(135deg)" : "initial")};
+    -moz-transform: ${({ open }) => (open ? "rotate(135deg)" : "initial")};
+    -o-transform: ${({ open }) => (open ? "rotate(135deg)" : "initial")};
+    transform: ${({ open }) => (open ? "rotate(135deg)" : "initial")};
   }
 
   span:nth-child(2) {
     top: 8px;
-    opacity: ${(props) => (props.open ? "0" : "initial")};
-    left: ${(props) => (props.open ? "-60px" : "0")};
+    opacity: ${({ open }) => (open ? "0" : "initial")};
+    left: ${({ open }) => (open ? "-60px" : "0")};
   }
 
   span:nth-child(3) {
-    top: ${(props) => (props.open ? "8px" : "16px")};
-    -webkit-transform: ${(props) =>
-      props.open ? "rotate(-135deg)" : "initial"};
-    -moz-transform: ${(props) => (props.open ? "rotate(-135deg)" : "initial")};
-    -o-transform: ${(props) => (props.open ? "rotate(-135deg)" : "initial")};
-    transform: ${(props) => (props.open ? "rotate(-135deg)" : "initial")};
+    top: ${({ open }) => (open ? "8px" : "16px")};
+    -webkit-transform: ${({ open }) => (open ? "rotate(-135deg)" : "initial")};
+    -moz-transform: ${({ open }) => (open ? "rotate(-135deg)" : "initial")};
+    -o-transform: ${({ open }) => (open ? "rotate(-135deg)" : "initial")};
+    transform: ${({ open }) => (open ? "rotate(-135deg)" : "initial")};
   }
 `;

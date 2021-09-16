@@ -1,5 +1,5 @@
 import "./App.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Particles from "./Particles/Particles";
@@ -7,16 +7,28 @@ import Effects from "./Effects/Effects";
 import Rig from "./Rig/Rig";
 import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 import Menu from "./Menu/Menu";
+import { AppContainer } from "./AppStyle";
 
 export default function App() {
+  const [menuOpen, setMenuOpen] = useState(true);
   const [func, setFunc] = useState("arneodo");
   const transition = useRef(false);
 
   const [mouse, onMouseMove, onWheel] = useRigMouseEvents();
 
   return (
-    <div className="container" onPointerMove={onMouseMove} onWheel={onWheel}>
-      <Menu func={func} setFunc={setFunc} transition={transition} />
+    <AppContainer
+      menuOpen={menuOpen}
+      onPointerMove={onMouseMove}
+      onWheel={onWheel}
+    >
+      <Menu
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        func={func}
+        setFunc={setFunc}
+        transition={transition}
+      />
       <Canvas
         camera={{
           position: [0, 0, 4],
@@ -40,6 +52,6 @@ export default function App() {
         <Effects />
         <Rig mouse={mouse} />
       </Canvas>
-    </div>
+    </AppContainer>
   );
 }
