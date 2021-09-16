@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-restricted-globals */
 
-const dadras = (length, parameters) => {
-  const { a, b, c, d, e } = parameters;
+const chen = (length, parameters) => {
+  const { a, b, c } = parameters;
   const positions = [];
-  const dt = 0.006;
-  const vec = new THREE.Vector3(1.1, 2.1, -2);
+  const dt = 0.0038;
+  const vec = new THREE.Vector3(5, 10, 12);
 
   const [updateSums, getCenter] = minMaxVectors();
 
@@ -13,14 +13,14 @@ const dadras = (length, parameters) => {
     const { x, y, z } = vec;
     updateSums(x, y, z);
     positions.push(vec.clone());
-    vec.x += (y - a * x + b * y * z) * dt;
-    vec.y += (c * y - x * z + z) * dt;
-    vec.z += (d * x * y - e * z) * dt;
+    vec.x += (a * x - y * z) * dt;
+    vec.y += (b * y + x * z) * dt;
+    vec.z += (c * z + (x * y) / 3) * dt;
   }
 
   const center = getCenter();
 
   positions.forEach((vec) => vec.sub(center));
-  positions.forEach((vec) => vec.multiplyScalar(0.13));
+  positions.forEach((vec) => vec.multiplyScalar(0.1));
   return positions;
 };
