@@ -11,6 +11,8 @@ importScripts("functions/chen.js");
 importScripts("functions/lorenz83.js");
 importScripts("functions/rossler.js");
 importScripts("functions/rabin.js");
+importScripts("functions/threeScroll1.js");
+importScripts("functions/threeScroll2.js");
 
 const functions = {
   aizawa,
@@ -22,6 +24,8 @@ const functions = {
   lorenz83,
   rossler,
   rabin,
+  threeScroll1,
+  threeScroll2,
 };
 
 const parameters = {
@@ -70,6 +74,21 @@ const parameters = {
   rabin: {
     a: 0.14,
     b: 0.1,
+  },
+  threeScroll1: {
+    a: 40.0,
+    b: 0.833,
+    c: 20.0,
+    d: 0.5,
+    e: 0.65,
+  },
+  threeScroll2: {
+    a: 32.48,
+    b: 45.84,
+    c: 1.18,
+    d: 0.13,
+    e: 0.57,
+    f: 14.7,
   },
 };
 const scratchObject3D = new THREE.Object3D();
