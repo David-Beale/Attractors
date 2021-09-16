@@ -11,7 +11,7 @@ import { AppContainer } from "./AppStyle";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(true);
-  const [func, setFunc] = useState("arneodo");
+  const [func, setFunc] = useState("aizawa");
   const transition = useRef(false);
 
   const [mouse, onMouseMove, onWheel] = useRigMouseEvents();
