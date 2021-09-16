@@ -7,7 +7,7 @@ import { functions } from "./functions";
 export default function FuncButtons({ func, setFunc, transition }) {
   return (
     <ButtonsOuterContainer>
-      Attractor
+      Attractors
       <ButtonContainer>
         {functions.map((item) => {
           return (
