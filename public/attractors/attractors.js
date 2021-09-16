@@ -6,12 +6,14 @@ importScripts("functions/aizawa.js");
 importScripts("functions/lorenz.js");
 importScripts("functions/halvorsen.js");
 importScripts("functions/thomas.js");
+importScripts("functions/dadras.js");
 
 const functions = {
   aizawa,
   lorenz,
   halvorsen,
   thomas,
+  dadras,
 };
 
 const parameters = {
@@ -33,6 +35,13 @@ const parameters = {
   },
   thomas: {
     b: 0.208186,
+  },
+  dadras: {
+    a: 3,
+    b: 2.7,
+    c: 1.7,
+    d: 2,
+    e: 9,
   },
 };
 const scratchObject3D = new THREE.Object3D();
