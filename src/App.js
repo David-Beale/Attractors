@@ -8,7 +8,7 @@ import Rig from "./Rig/Rig";
 import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 
 export default function App() {
-  const [func, setFunc] = useState("threeScroll2");
+  const [func, setFunc] = useState("sprott");
   const transition = useRef(false);
 
   const onClick = () => {
