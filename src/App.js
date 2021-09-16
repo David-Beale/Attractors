@@ -8,7 +8,7 @@ import Rig from "./Rig/Rig";
 import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 
 export default function App() {
-  const [func, setFunc] = useState("dequan");
+  const [func, setFunc] = useState("arneodo");
   const transition = useRef(false);
 
   const onClick = () => {
