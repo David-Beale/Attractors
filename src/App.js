@@ -8,7 +8,7 @@ import Rig from "./Rig/Rig";
 import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 
 export default function App() {
-  const [func, setFunc] = useState("sprott");
+  const [func, setFunc] = useState("fourwing");
   const transition = useRef(false);
 
   const onClick = () => {

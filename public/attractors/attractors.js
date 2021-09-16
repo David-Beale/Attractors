@@ -14,6 +14,7 @@ importScripts("functions/rabin.js");
 importScripts("functions/threeScroll1.js");
 importScripts("functions/threeScroll2.js");
 importScripts("functions/sprott.js");
+importScripts("functions/fourwing.js");
 
 const functions = {
   aizawa,
@@ -28,6 +29,7 @@ const functions = {
   threeScroll1,
   threeScroll2,
   sprott,
+  fourwing,
 };
 
 const parameters = {
@@ -95,6 +97,11 @@ const parameters = {
   sprott: {
     a: 2.07,
     b: 1.79,
+  },
+  fourwing: {
+    a: 0.2,
+    b: 0.01,
+    c: -0.4,
   },
 };
 const scratchObject3D = new THREE.Object3D();
