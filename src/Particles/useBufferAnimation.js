@@ -29,15 +29,11 @@ export const useBufferAnimation = ({ func, transition }) => {
 
   useEffect(() => {
     const updateGeo = (name, array) => {
-      const tmpa = [];
       const geometry = geometryRef.current;
       const buffer = geometry.attributes[name];
 
       for (let i = 0; i < length; i++) {
-        tmpa[0] = array[i][0];
-        tmpa[1] = array[i][1];
-        tmpa[2] = array[i][2];
-        geometry.setPrefabData(buffer, i, tmpa);
+        geometry.setPrefabData(buffer, i, array[i]);
       }
       buffer.needsUpdate = true;
     };
