@@ -5,6 +5,7 @@ import MenuButton from "./Components/MenuButton/MenuButton";
 
 import { Container } from "./MenuStyle";
 import FuncButtons from "./Components/FuncButtons/FuncButtons";
+import Parameters from "./Components/Parameters/Parameters";
 
 export default memo(function Menu({
   menuOpen,
@@ -12,6 +13,8 @@ export default memo(function Menu({
   func,
   setFunc,
   transition,
+  parameters,
+  setParameters,
 }) {
   return (
     <>
@@ -19,6 +22,7 @@ export default memo(function Menu({
       <Drawer variant="persistent" anchor="right" open={menuOpen}>
         <Container>
           <FuncButtons func={func} setFunc={setFunc} transition={transition} />
+          <Parameters parameters={parameters} setParameters={setParameters} />
         </Container>
       </Drawer>
     </>

@@ -7,9 +7,8 @@ importScripts("functions.js");
 const scratchObject3D = new THREE.Object3D();
 
 self.onmessage = (e) => {
-  const { func, length } = e.data;
-
-  let positions = functions[func](length, parameters[func]);
+  const { parameters, length } = e.data;
+  let positions = functions[parameters.name](length, parameters);
 
   const rotations = [];
   const axis = new THREE.Vector3(1, 0, 0);

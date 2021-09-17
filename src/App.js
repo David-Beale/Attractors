@@ -8,11 +8,17 @@ import Rig from "./Rig/Rig";
 import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 import Menu from "./Menu/Menu";
 import { AppContainer } from "./AppStyle";
+import { defaultParameters } from "./defaultParameters";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(true);
   const [func, setFunc] = useState("aizawa");
+  const [parameters, setParameters] = useState(defaultParameters.aizawa);
   const transition = useRef(false);
+
+  useEffect(() => {
+    setParameters(defaultParameters[func]);
+  }, [func]);
 
   const [mouse, onMouseMove, onWheel] = useRigMouseEvents();
 
@@ -28,6 +34,8 @@ export default function App() {
         func={func}
         setFunc={setFunc}
         transition={transition}
+        parameters={parameters}
+        setParameters={setParameters}
       />
       <Canvas
         camera={{
@@ -36,7 +44,7 @@ export default function App() {
           far: 1000,
         }}
       >
-        <Particles func={func} transition={transition} />
+        <Particles parameters={parameters} transition={transition} />
         <Stats className="stats" />
         <directionalLight
           intensity={5}

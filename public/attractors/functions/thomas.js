@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const thomas = (length, parameters) => {
-  const { b } = parameters;
+  const { dt, x, y, z, b } = parameters;
   const positions = [];
-  const dt = 0.06;
-  const vec = new THREE.Vector3(0.8, 0.8, -0.1);
+  const vec = new THREE.Vector3(x, y, z);
 
   const [updateSums, getCenter] = minMaxVectors();
 

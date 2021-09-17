@@ -13,7 +13,7 @@ const worker = new Worker("./attractors/attractors.js");
 
 const length = 25000;
 
-export const useBufferAnimation = ({ func, transition }) => {
+export const useBufferAnimation = ({ parameters, transition }) => {
   const meshRef = useRef();
   const posRef = useRef();
   const rotRef = useRef();
@@ -24,8 +24,8 @@ export const useBufferAnimation = ({ func, transition }) => {
   const [init, setInit] = useState(false);
 
   useEffect(() => {
-    worker.postMessage({ func, length });
-  }, [func]);
+    worker.postMessage({ parameters, length });
+  }, [parameters]);
 
   useEffect(() => {
     const updateGeo = (name, array) => {
@@ -63,10 +63,9 @@ export const useBufferAnimation = ({ func, transition }) => {
         uniforms.progress.value = -1;
         transition.current = false;
       }
-    } else {
-      uniforms.index.value--;
-      if (uniforms.index.value === 0) uniforms.index.value = length;
     }
+    uniforms.index.value--;
+    if (uniforms.index.value === 0) uniforms.index.value = length;
   });
 
   return useMemo(() => {

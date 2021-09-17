@@ -2,11 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const lorenzMod2 = (length, parameters) => {
-  const { a, b, c, d } = parameters;
+  const { dt, x, y, z, a, b, c, d } = parameters;
   const positions = [];
-  const dt = 0.0007;
-  // const vec = new THREE.Vector3(-0.29, -0.29, -0.59);
-  const vec = new THREE.Vector3(0.5, 0.5, 0.5);
+  const vec = new THREE.Vector3(x, y, z);
 
   const [updateSums, getCenter] = minMaxVectors();
 

@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const rossler = (length, parameters) => {
-  const { a, b, c } = parameters;
+  const { dt, x, y, z, a, b, c } = parameters;
   const positions = [];
-  const dt = 0.0059;
-  const vec = new THREE.Vector3(-0.2, -2, -2.71);
+  const vec = new THREE.Vector3(x, y, z);
   const [updateSums, getCenter] = minMaxVectors();
 
   for (let i = 0; i < length; i++) {

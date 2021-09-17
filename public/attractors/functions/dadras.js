@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const dadras = (length, parameters) => {
-  const { a, b, c, d, e } = parameters;
+  const { dt, x, y, z, a, b, c, d, e } = parameters;
   const positions = [];
-  const dt = 0.006;
-  const vec = new THREE.Vector3(1.1, 2.1, -2);
+  const vec = new THREE.Vector3(x, y, z);
 
   const [updateSums, getCenter] = minMaxVectors();
 

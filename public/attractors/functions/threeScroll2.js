@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const threeScroll2 = (length, parameters) => {
-  const { a, b, c, d, e, f } = parameters;
+  const { dt, x, y, z, a, b, c, d, e, f } = parameters;
   const positions = [];
-  const dt = 0.0005;
-  const vec = new THREE.Vector3(-0.29, -0.29, -0.59);
+  const vec = new THREE.Vector3(x, y, z);
 
   const [updateSums, getCenter] = minMaxVectors();
 

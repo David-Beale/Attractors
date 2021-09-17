@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const halvorsen = (length, parameters) => {
-  const { a } = parameters;
+  const { dt, x, y, z, a } = parameters;
   const positions = [];
-  const dt = 0.009;
-  const vec = new THREE.Vector3(-1.48, -1.51, 2.04);
+  const vec = new THREE.Vector3(x, y, z);
 
   const [updateSums, getCenter] = minMaxVectors();
 

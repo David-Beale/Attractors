@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const aizawa = (length, parameters) => {
-  const { a, b, c, d, e, f } = parameters;
+  const { dt, x, y, z, a, b, c, d, e, f } = parameters;
   const positions = [];
-  const dt = 0.01;
-  const vec = new THREE.Vector3(0.5, 1.0, 0.01);
+  const vec = new THREE.Vector3(x, y, z);
 
   const [updateSums, getCenter] = minMaxVectors();
 

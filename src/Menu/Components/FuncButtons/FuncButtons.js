@@ -1,17 +1,18 @@
 import React from "react";
 import Button from "./Buttons/Button";
 
-import { ButtonsOuterContainer, ButtonContainer } from "../../MenuStyle";
+import { SectionContainer, SectionSubContainer } from "../../MenuStyle";
 import { functions } from "./functions";
 
 export default function FuncButtons({ func, setFunc, transition }) {
   return (
-    <ButtonsOuterContainer>
+    <SectionContainer>
       Attractors
-      <ButtonContainer>
+      <SectionSubContainer>
         {functions.map((item) => {
           return (
             <Button
+              key={item.tag}
               item={item}
               func={func}
               setFunc={setFunc}
@@ -19,7 +20,7 @@ export default function FuncButtons({ func, setFunc, transition }) {
             />
           );
         })}
-      </ButtonContainer>
-    </ButtonsOuterContainer>
+      </SectionSubContainer>
+    </SectionContainer>
   );
 }

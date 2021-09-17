@@ -1,8 +1,8 @@
 import { useBufferAnimation } from "./useBufferAnimation";
 
-export default function Lorenz({ func, transition }) {
+export default function Lorenz({ parameters, transition }) {
   const [meshRef, geo, mat] = useBufferAnimation({
-    func,
+    parameters,
     transition,
   });
 

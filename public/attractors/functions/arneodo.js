@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const arneodo = (length, parameters) => {
-  const { a, b, c } = parameters;
+  const { dt, x, y, z, a, b, c } = parameters;
   const positions = [];
-  const dt = 0.0065;
-  const vec = new THREE.Vector3(0.5, 0.38, 0.4);
+  const vec = new THREE.Vector3(x, y, z);
 
   const [updateSums, getCenter] = minMaxVectors();
 

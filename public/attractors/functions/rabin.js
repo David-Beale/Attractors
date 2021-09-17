@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-globals */
 
 const rabin = (length, parameters) => {
-  const { a, b } = parameters;
+  const { dt, x, y, z, a, b } = parameters;
   const positions = [];
-  const dt = 0.0175;
-  const vec = new THREE.Vector3(0.02, -0.3, 0.1);
+  const vec = new THREE.Vector3(x, y, z);
   const [updateSums, getCenter] = minMaxVectors();
 
   for (let i = 0; i < length; i++) {
