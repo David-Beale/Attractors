@@ -9,11 +9,13 @@ import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 import Menu from "./Menu/Menu";
 import { AppContainer } from "./AppStyle";
 import { defaultParameters } from "./defaultParameters";
+import Error from "./Error/Error";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(true);
   const [func, setFunc] = useState("aizawa");
   const [parameters, setParameters] = useState(defaultParameters.aizawa);
+  const [error, setError] = useState(false);
   const transition = useRef(false);
 
   useEffect(() => {
@@ -44,7 +46,11 @@ export default function App() {
           far: 1000,
         }}
       >
-        <Particles parameters={parameters} transition={transition} />
+        <Particles
+          parameters={parameters}
+          transition={transition}
+          setError={setError}
+        />
         <Stats className="stats" />
         <directionalLight
           intensity={5}
@@ -60,6 +66,7 @@ export default function App() {
         <Effects />
         <Rig mouse={mouse} />
       </Canvas>
+      <Error open={error} setOpen={setError} />
     </AppContainer>
   );
 }

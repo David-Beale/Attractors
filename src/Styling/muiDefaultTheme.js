@@ -37,6 +37,7 @@ export const makeMuiTheme = () =>
         paper: {
           background: "rgba(255,255,255,0.9)",
           margin: "0",
+          borderRadius: "15px",
         },
       },
     },

@@ -13,7 +13,7 @@ const worker = new Worker("./attractors/attractors.js");
 
 const length = 25000;
 
-export const useBufferAnimation = ({ parameters, transition }) => {
+export const useBufferAnimation = ({ parameters, transition, setError }) => {
   const meshRef = useRef();
   const posRef = useRef();
   const rotRef = useRef();
@@ -39,7 +39,11 @@ export const useBufferAnimation = ({ parameters, transition }) => {
     };
 
     worker.onmessage = (e) => {
-      const { positions, rotations } = e.data;
+      const { error, positions, rotations } = e.data;
+      if (error) {
+        setError(true);
+        return;
+      }
       //only update geo if it already exists
       if (posRef.current) {
         updateGeo("prevPos", posRef.current);

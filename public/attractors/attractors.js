@@ -14,6 +14,14 @@ self.onmessage = (e) => {
   const axis = new THREE.Vector3(1, 0, 0);
   for (let i = 0; i < length - 1; i++) {
     const currentVector = positions[i];
+    if (
+      isNaN(currentVector.x) ||
+      isNaN(currentVector.y) ||
+      isNaN(currentVector.z)
+    ) {
+      self.postMessage({ error: true });
+      return;
+    }
     const nextVector = positions[i + 1];
 
     scratchObject3D.position.set(
