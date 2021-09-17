@@ -54,9 +54,9 @@ export default function Lorenz() {
       );
       scratchObject3D.lookAt(nextVector);
       scratchObject3D.rotateOnAxis(axis, Math.PI / 2);
-      rotations.push(scratchObject3D.rotation.toArray());
+      rotations.push(scratchObject3D.quaternion.clone());
     }
-    rotations.push(scratchObject3D.rotation.toArray());
+    rotations.push(scratchObject3D.quaternion.clone());
     return [positions, rotations];
   }, []);
 
@@ -87,11 +87,7 @@ export default function Lorenz() {
   //       currentVector.z
   //     );
 
-  //     scratchObject3D.rotation.set(
-  //       rotations[i][0],
-  //       rotations[i][1],
-  //       rotations[i][2]
-  //     );
+  //     scratchObject3D.setRotationFromQuaternion(rotations[i]);
 
   //     scratchObject3D.updateMatrix();
 
@@ -114,12 +110,7 @@ export default function Lorenz() {
         currentVector.y,
         currentVector.z
       );
-
-      scratchObject3D.rotation.set(
-        rotations[i][0],
-        rotations[i][1],
-        rotations[i][2]
-      );
+      scratchObject3D.setRotationFromQuaternion(rotations[i]);
 
       scratchObject3D.updateMatrix();
       meshRef.current.setMatrixAt(i, scratchObject3D.matrix);
