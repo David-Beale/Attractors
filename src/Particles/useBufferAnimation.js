@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
+import * as d3 from "d3-ease";
 
 import {
   InstancedPrefabBufferGeometry,
@@ -17,6 +18,7 @@ export const useBufferAnimation = ({ parameters, transition, setError }) => {
   const meshRef = useRef();
   const posRef = useRef();
   const rotRef = useRef();
+  const progress = useRef(-1);
 
   const geometryRef = useRef(null);
   const materialRef = useRef(null);
@@ -50,20 +52,22 @@ export const useBufferAnimation = ({ parameters, transition, setError }) => {
         updateGeo("prevRot", rotRef.current);
         updateGeo("pos", positions);
         updateGeo("rot", rotations);
-        meshRef.current.material.uniforms.progress.value = 0;
+        progress.current = 0;
       }
       posRef.current = positions;
       rotRef.current = rotations;
       setInit(true);
     };
-  }, [meshRef]);
+  }, [meshRef, setError]);
 
   useFrame(() => {
     if (!meshRef.current) return;
     const uniforms = meshRef.current.material.uniforms;
-    if (uniforms.progress.value >= 0) {
-      uniforms.progress.value += 0.01;
-      if (uniforms.progress.value > 1) {
+    if (progress.current >= 0) {
+      progress.current += 0.01;
+      uniforms.progress.value = d3.easeCubicInOut(progress.current);
+      if (progress.current > 1) {
+        progress.current = -1;
         uniforms.progress.value = -1;
         transition.current = false;
       }
@@ -133,7 +137,6 @@ export const useBufferAnimation = ({ parameters, transition, setError }) => {
       vertexNormal: [
         "vec3 rotation;",
         "if(progress > 0.0) {",
-        "float time = easeCubicInOut(progress);",
         "rotation = mix(prevRot, rot, progress);",
         "} else {",
         "rotation = rot;",
@@ -159,16 +162,12 @@ export const useBufferAnimation = ({ parameters, transition, setError }) => {
         "transformed = rotateVector(quatX, transformed);",
 
         "if(progress > 0.0) {",
-        "float time = easeCubicInOut(progress);",
-        "transformed += mix(prevPos + offset, pos + offset, time);",
+        "transformed += mix(prevPos + offset, pos + offset, progress);",
         "} else {",
         "transformed += pos + offset;",
         "};",
       ],
-      vertexFunctions: [
-        ShaderChunk["quaternion_rotation"],
-        ShaderChunk["ease_cubic_in_out"],
-      ],
+      vertexFunctions: [ShaderChunk["quaternion_rotation"]],
       color: "white",
       blending: AdditiveBlending,
     });
