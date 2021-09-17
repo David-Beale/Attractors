@@ -40,18 +40,11 @@ export default function Parameters({ parameters, setParameters }) {
     setParameters(defaultParameters[parameters.name]);
   };
 
-  const { dt, name, x, y, z, ...rest } = localParameters;
+  const { name, x, y, z, ...rest } = localParameters;
   return (
     <SectionContainer>
       Parameters
       <Form onKeyDown={onSubmit}>
-        <Row>
-          <Param
-            name="dt"
-            value={localParameters.dt}
-            updateValue={updateValue}
-          />
-        </Row>
         <Row>
           <Param name="x" value={localParameters.x} updateValue={updateValue} />
           <Param name="y" value={localParameters.y} updateValue={updateValue} />
