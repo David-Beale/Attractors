@@ -34,6 +34,7 @@ export const SectionSubContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+  padding: 0 5px;
 `;
 
 export const StyledIconButton = styled(IconButton)`
@@ -42,7 +43,7 @@ export const StyledIconButton = styled(IconButton)`
   font-weight: 600;
   height: 50px;
   width: 50px;
-  margin: 10px;
+  margin: 8px;
   box-shadow: ${(props) =>
     props.enabled
       ? "inset -4px -4px 8px rgba(255, 255, 255, 0.6), inset 8px 8px 16px rgba(0, 0, 0, 0.2)"

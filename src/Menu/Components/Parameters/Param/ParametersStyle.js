@@ -6,7 +6,7 @@ export const ParameterContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 8px 5px;
-  width: 105px;
+  width: 103px;
 `;
 
 export const Input = styled.input`
