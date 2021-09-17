@@ -4,7 +4,7 @@ import { IconButton } from "@material-ui/core";
 export const Container = styled.div`
   width: 400px;
   height: 100vh;
-  padding: 60px 25px 0 25px;
+  padding: 40px 25px 0 25px;
   background-color: #ecf0f3;
   display: flex;
   flex-direction: column;
