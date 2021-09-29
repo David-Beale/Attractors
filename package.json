@@ -1,5 +1,6 @@
 {
   "name": "lorenz",
+  "homepage": "https://david-beale.github.io/Attractors/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
