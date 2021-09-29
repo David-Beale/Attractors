@@ -15,7 +15,12 @@ export const Container = styled.div`
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 `;
-
+export const WaitContainer = styled.div`
+  width: 400px;
+  height: 100vh;
+  cursor: wait;
+  position: absolute;
+`;
 export const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;

@@ -1,5 +1,5 @@
 import "./App.css";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Particles from "./Particles/Particles";
@@ -15,7 +15,7 @@ import { useParameters } from "./Parameters/useParameters";
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(true);
   const [func, setFunc] = useState("aizawa");
-  const transition = useRef(false);
+  const [waiting, setWaiting] = useState(false);
 
   const [mouse, onMouseMove, onWheel] = useRigMouseEvents();
   const [
@@ -38,7 +38,8 @@ export default function App() {
         setMenuOpen={setMenuOpen}
         func={func}
         setFunc={setFunc}
-        transition={transition}
+        waiting={waiting}
+        setWaiting={setWaiting}
         parameters={parameters}
         onUpdateParameters={onUpdateParameters}
         onResetParameters={onResetParameters}
@@ -52,7 +53,7 @@ export default function App() {
       >
         <Particles
           parameters={parameters}
-          transition={transition}
+          setWaiting={setWaiting}
           onError={onError}
         />
         <Stats className="stats" />

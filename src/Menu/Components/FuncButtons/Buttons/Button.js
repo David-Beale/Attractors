@@ -3,11 +3,10 @@ import React from "react";
 import { StyledIconButton } from "../../../MenuStyle";
 import { Tooltip } from "@material-ui/core";
 
-export default function Button({ item, func, setFunc, transition }) {
+export default function Button({ item, func, setFunc, setWaiting }) {
   const onClick = () => {
-    if (transition.current) return;
     setFunc(item.id);
-    transition.current = true;
+    setWaiting(true);
   };
   return (
     <Tooltip title={item.name}>

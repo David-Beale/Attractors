@@ -4,7 +4,7 @@ import Button from "./Buttons/Button";
 import { SectionContainer, SectionSubContainer } from "../../MenuStyle";
 import { functions } from "./functions";
 
-export default function FuncButtons({ func, setFunc, transition }) {
+export default function FuncButtons({ func, setFunc, setWaiting }) {
   return (
     <SectionContainer>
       Attractors
@@ -16,7 +16,7 @@ export default function FuncButtons({ func, setFunc, transition }) {
               item={item}
               func={func}
               setFunc={setFunc}
-              transition={transition}
+              setWaiting={setWaiting}
             />
           );
         })}

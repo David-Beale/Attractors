@@ -14,7 +14,7 @@ export default function Parameters({
   parameters,
   onUpdateParameters,
   onResetParameters,
-  transition,
+  setWaiting,
 }) {
   const [localParameters, setLocalParameters] = useState(parameters);
 
@@ -29,13 +29,11 @@ export default function Parameters({
   };
 
   const onSubmit = (e) => {
-    if (
-      transition.current ||
-      (e.code !== "Enter" && e.code !== "NumpadEnter" && e.type !== "click")
-    ) {
+    if (e.code !== "Enter" && e.code !== "NumpadEnter" && e.type !== "click") {
       return;
     }
-    transition.current = true;
+    if (localParameters === parameters) return;
+    setWaiting(true);
     const newParameters = { ...localParameters };
     Object.keys(newParameters).forEach((key) => {
       if (key === "name") return;
@@ -45,12 +43,11 @@ export default function Parameters({
   };
 
   const onReset = () => {
-    if (transition.current) return;
-    transition.current = true;
+    setWaiting(true);
     onResetParameters();
   };
 
-  const { name, id, x, y, z, ...rest } = localParameters;
+  const { name, defaultPar, id, x, y, z, ...rest } = localParameters;
   return (
     <SectionContainer>
       Parameters
@@ -71,7 +68,10 @@ export default function Parameters({
           ))}
         </SectionSubContainer>
         <Row>
-          <StyledIconButton onClick={onReset}>
+          <StyledIconButton
+            onClick={onReset}
+            disabled={localParameters.defaultPar}
+          >
             <RefreshIcon />
           </StyledIconButton>
           <StyledIconButton

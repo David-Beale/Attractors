@@ -3,7 +3,7 @@ import Drawer from "@material-ui/core/Drawer";
 
 import MenuButton from "./Components/MenuButton/MenuButton";
 
-import { Container } from "./MenuStyle";
+import { Container, WaitContainer } from "./MenuStyle";
 import FuncButtons from "./Components/FuncButtons/FuncButtons";
 import Parameters from "./Components/Parameters/Parameters";
 
@@ -12,26 +12,28 @@ export default memo(function Menu({
   setMenuOpen,
   func,
   setFunc,
-  transition,
   parameters,
   onUpdateParameters,
   onResetParameters,
+  waiting,
+  setWaiting,
 }) {
   return (
     <>
       <MenuButton setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
       <Drawer variant="persistent" anchor="right" open={menuOpen}>
         <Container>
-          <FuncButtons func={func} setFunc={setFunc} transition={transition} />
+          <FuncButtons func={func} setFunc={setFunc} setWaiting={setWaiting} />
           {parameters && (
             <Parameters
-              transition={transition}
+              setWaiting={setWaiting}
               parameters={parameters}
               onUpdateParameters={onUpdateParameters}
               onResetParameters={onResetParameters}
             />
           )}
         </Container>
+        {waiting && <WaitContainer />}
       </Drawer>
     </>
   );
