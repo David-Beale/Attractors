@@ -16,13 +16,11 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Zoom ref={ref} {...props} />;
 });
 
-export default function Error({ open, setOpen }) {
-  const onClose = () => setOpen(false);
-
+export default function Error({ open, onClearError }) {
   return (
     <Dialog
-      onClick={onClose}
-      onClose={onClose}
+      onClick={onClearError}
+      onClose={onClearError}
       open={open}
       TransitionComponent={Transition}
     >

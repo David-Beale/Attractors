@@ -9,9 +9,13 @@ import {
   StyledIconButton,
 } from "../../MenuStyle";
 import Param from "./Param/Param";
-import { defaultParameters } from "../../../defaultParameters";
 
-export default function Parameters({ parameters, setParameters }) {
+export default function Parameters({
+  parameters,
+  onUpdateParameters,
+  onResetParameters,
+  transition,
+}) {
   const [localParameters, setLocalParameters] = useState(parameters);
 
   useEffect(() => {
@@ -25,22 +29,28 @@ export default function Parameters({ parameters, setParameters }) {
   };
 
   const onSubmit = (e) => {
-    if (e.code !== "Enter" && e.code !== "NumpadEnter" && e.type !== "click") {
+    if (
+      transition.current ||
+      (e.code !== "Enter" && e.code !== "NumpadEnter" && e.type !== "click")
+    ) {
       return;
     }
+    transition.current = true;
     const newParameters = { ...localParameters };
     Object.keys(newParameters).forEach((key) => {
       if (key === "name") return;
       newParameters[key] = +newParameters[key];
     });
-    setParameters(newParameters);
+    onUpdateParameters(newParameters);
   };
 
   const onReset = () => {
-    setParameters(defaultParameters[parameters.name]);
+    if (transition.current) return;
+    transition.current = true;
+    onResetParameters();
   };
 
-  const { name, x, y, z, ...rest } = localParameters;
+  const { name, id, x, y, z, ...rest } = localParameters;
   return (
     <SectionContainer>
       Parameters
@@ -61,10 +71,7 @@ export default function Parameters({ parameters, setParameters }) {
           ))}
         </SectionSubContainer>
         <Row>
-          <StyledIconButton
-            onClick={onReset}
-            disabled={localParameters === defaultParameters[parameters.name]}
-          >
+          <StyledIconButton onClick={onReset}>
             <RefreshIcon />
           </StyledIconButton>
           <StyledIconButton

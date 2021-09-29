@@ -14,7 +14,7 @@ const worker = new Worker("./attractors/attractors.js");
 
 const length = 25000;
 
-export const useBufferAnimation = ({ parameters, transition, setError }) => {
+export const useBufferAnimation = ({ parameters, transition, onError }) => {
   const meshRef = useRef();
   const posRef = useRef();
   const rotRef = useRef();
@@ -22,10 +22,14 @@ export const useBufferAnimation = ({ parameters, transition, setError }) => {
 
   const geometryRef = useRef(null);
   const materialRef = useRef(null);
+  const curId = useRef(null);
+  const prevId = useRef(null);
 
   const [init, setInit] = useState(false);
 
   useEffect(() => {
+    curId.current = parameters.id;
+    if (!parameters || curId.current === prevId.current) return;
     worker.postMessage({ parameters, length });
   }, [parameters]);
 
@@ -42,10 +46,8 @@ export const useBufferAnimation = ({ parameters, transition, setError }) => {
 
     worker.onmessage = (e) => {
       const { error, positions, rotations } = e.data;
-      if (error) {
-        setError(true);
-        return;
-      }
+      if (error) return onError();
+      prevId.current = curId.current;
       //only update geo if it already exists
       if (posRef.current) {
         updateGeo("prevPos", posRef.current);
@@ -58,7 +60,7 @@ export const useBufferAnimation = ({ parameters, transition, setError }) => {
       rotRef.current = rotations;
       setInit(true);
     };
-  }, [meshRef, setError]);
+  }, [meshRef, onError]);
 
   useFrame(() => {
     if (!meshRef.current) return;

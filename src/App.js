@@ -1,5 +1,5 @@
 import "./App.css";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Particles from "./Particles/Particles";
@@ -8,21 +8,24 @@ import Rig from "./Rig/Rig";
 import { useRigMouseEvents } from "./Rig/useRigMouseEvents";
 import Menu from "./Menu/Menu";
 import { AppContainer } from "./AppStyle";
-import { defaultParameters } from "./defaultParameters";
+
 import Error from "./Error/Error";
+import { useParameters } from "./Parameters/useParameters";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(true);
   const [func, setFunc] = useState("aizawa");
-  const [parameters, setParameters] = useState(defaultParameters.aizawa);
-  const [error, setError] = useState(false);
   const transition = useRef(false);
 
-  useEffect(() => {
-    setParameters(defaultParameters[func]);
-  }, [func]);
-
   const [mouse, onMouseMove, onWheel] = useRigMouseEvents();
+  const [
+    parameters,
+    error,
+    onUpdateParameters,
+    onResetParameters,
+    onError,
+    onClearError,
+  ] = useParameters(func);
 
   return (
     <AppContainer
@@ -37,7 +40,8 @@ export default function App() {
         setFunc={setFunc}
         transition={transition}
         parameters={parameters}
-        setParameters={setParameters}
+        onUpdateParameters={onUpdateParameters}
+        onResetParameters={onResetParameters}
       />
       <Canvas
         camera={{
@@ -49,7 +53,7 @@ export default function App() {
         <Particles
           parameters={parameters}
           transition={transition}
-          setError={setError}
+          onError={onError}
         />
         <Stats className="stats" />
         <directionalLight
@@ -66,7 +70,7 @@ export default function App() {
         <Effects />
         <Rig mouse={mouse} />
       </Canvas>
-      <Error open={error} setOpen={setError} />
+      <Error open={error} onClearError={onClearError} />
     </AppContainer>
   );
 }

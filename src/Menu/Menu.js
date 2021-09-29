@@ -14,7 +14,8 @@ export default memo(function Menu({
   setFunc,
   transition,
   parameters,
-  setParameters,
+  onUpdateParameters,
+  onResetParameters,
 }) {
   return (
     <>
@@ -22,7 +23,14 @@ export default memo(function Menu({
       <Drawer variant="persistent" anchor="right" open={menuOpen}>
         <Container>
           <FuncButtons func={func} setFunc={setFunc} transition={transition} />
-          <Parameters parameters={parameters} setParameters={setParameters} />
+          {parameters && (
+            <Parameters
+              transition={transition}
+              parameters={parameters}
+              onUpdateParameters={onUpdateParameters}
+              onResetParameters={onResetParameters}
+            />
+          )}
         </Container>
       </Drawer>
     </>

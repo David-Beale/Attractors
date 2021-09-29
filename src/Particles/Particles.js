@@ -1,11 +1,11 @@
 import { Text } from "@react-three/drei";
 import { useBufferAnimation } from "./useBufferAnimation";
 
-export default function Particles({ parameters, transition, setError }) {
+export default function Particles({ parameters, transition, onError }) {
   const [meshRef, geo, mat] = useBufferAnimation({
     parameters,
     transition,
-    setError,
+    onError,
   });
 
   return (
